@@ -56,4 +56,86 @@ export class EventRecord {
         this._lat = obj.lat;
         this._lon = obj.lon;
     }
+
+    get id() {
+        return this._id;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    set name(name: string) {
+        if (!name || name.length < 3 || name.length > 50) {
+            this.validationErrors.push(
+              `Event name length must be between 3 and 50 characters - now is ${name.length}.`,
+            );
+        } else {
+            this._name = name;
+        }
+    }
+
+    get description() {
+        return this._description;
+    }
+
+    set description(description: string) {
+        if (!description || description.length < 10 || description.length > 500) {
+            this.validationErrors.push(
+              `Event description length must be between 10 and 500 characters - now is ${description.length}.`,
+            );
+        } else {
+            this._description = description;
+        }
+    }
+
+    get isChosen() {
+        return this._isChosen;
+    }
+
+    set isChosen(isChosen: boolean) {
+        this._isChosen = isChosen;
+    }
+
+    get estimatedTime() {
+        return this._estimatedTime;
+    }
+
+    set estimatedTime(estimatedTime: number) {
+        if (estimatedTime <= 0) {
+            this.validationErrors.push(
+              'Event estimated time must be greater then zero.',
+            );
+        } else {
+            this._estimatedTime = estimatedTime;
+        }
+    }
+
+    get link() {
+        return this._link;
+    }
+
+    set link(link: string) {
+        if (link === '') {
+            this._link = null;
+        } else {
+            this._link = link;
+        }
+    }
+
+    get lat() {
+        return this._lat;
+    }
+
+    set lat(lat:number) {
+        this._lat = lat;
+    }
+
+    get lon() {
+        return this._lon;
+    }
+
+    set lon(lon: number) {
+        this._lon = lon;
+    }
 }
