@@ -128,6 +128,11 @@ export class EventRecord {
     }
 
     set lat(lat:number) {
+        if(typeof lat !== 'number') {
+            this.validationErrors.push(
+                'Coordinates must be numbers.',
+            );
+        }
         this._lat = lat;
     }
 
@@ -136,6 +141,11 @@ export class EventRecord {
     }
 
     set lon(lon: number) {
+        if(typeof lon !== 'number') {
+            this.validationErrors.push(
+                'Coordinates must be numbers.',
+            );
+        }
         this._lon = lon;
     }
 }
