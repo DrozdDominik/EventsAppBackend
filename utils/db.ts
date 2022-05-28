@@ -7,4 +7,5 @@ export const pool = mysql.createPool({
     password: config.dbPassword,
     database: config.dbDatabase,
     namedPlaceholders: true,
+    decimalNumbers: true,
 });

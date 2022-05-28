@@ -1,8 +1,8 @@
 import { it, expect} from 'vitest';
-import {EventEntity} from "../types";
+import {NewEventEntity} from "../types";
 import {EventRecord} from "../records/event.record";
 
-const defaultObj:EventEntity = {
+const defaultObj: NewEventEntity = {
     name: "Test event",
     description: "Test event description",
     estimated_time: 180,

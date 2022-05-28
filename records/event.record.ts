@@ -1,8 +1,12 @@
+import { FieldPacket } from 'mysql2/promise';
 import { v4 as uuid } from 'uuid';
-import { EventEntity } from "../types";
+import {EventEntity, NewEventEntity} from "../types";
+import { pool } from '../utils/db';
 import {AppError} from "../utils/error";
 
-export class EventRecord {
+type EventRecordResults = [NewEventEntity[], FieldPacket[]];
+
+export class EventRecord implements EventEntity{
     private readonly _id?: string;
     private _name: string;
     private _description: string;
@@ -13,7 +17,7 @@ export class EventRecord {
     private _lon: number;
     public validationErrors: string[] = [];
 
-    constructor(obj: EventEntity) {
+    constructor(obj: NewEventEntity) {
         this._id = obj.id ?? uuid();
         this._isChosen = obj.is_chosen ?? false;
         this._link = obj.link ?? null;
@@ -147,5 +151,34 @@ export class EventRecord {
             );
         }
         this._lon = lon;
+    }
+
+    public async insert(): Promise<string> {
+        await pool.execute(
+            'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon);',
+            {
+                id: this._id,
+                name: this._name,
+                description: this._description,
+                is_chosen: this._isChosen,
+                estimated_time: this._estimatedTime,
+                link: this._link,
+                lat: this._lat,
+                lon: this._lon,
+            },
+        );
+
+        return this._id;
+    }
+
+    public static async getOne(id: string): Promise<EventRecord> | null {
+        const [results] = (await pool.execute(
+            'SELECT * FROM `events` WHERE `id` = :id;',
+            {
+                id,
+            },
+        )) as EventRecordResults;
+
+        return results.length === 0 ? null : new EventRecord(results[0]);
     }
 }
