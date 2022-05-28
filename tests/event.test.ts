@@ -1,8 +1,8 @@
-import {it, expect, afterAll} from 'vitest';
-import {NewEventEntity} from "../types";
+import {it, expect, afterAll, beforeAll} from 'vitest';
+import {EventEntity, NewEventEntity} from "../types";
 import {pool} from "../utils/db";
 import {EventRecord} from "../records/event.record";
-
+import {FieldPacket} from "mysql2/promise";
 
 const defaultObj: NewEventEntity = {
     name: "Test event name",
@@ -12,6 +12,10 @@ const defaultObj: NewEventEntity = {
     lat: 21.23,
     lon: 50.03,
 }
+
+beforeAll(async () => {
+    await pool.execute("DELETE FROM `events` WHERE `name` LIKE 'Test%'");
+});
 
 afterAll(async () => {
     await pool.end();
@@ -35,3 +39,53 @@ it('should inserts data to database.', async () => {
     expect(foundEvent).not.toBeNull();
     expect(foundEvent.id).toBe(event.id);
 });
+
+it('should returns array of all entries.',async () => {
+    const events = await EventRecord.getAll();
+
+    const [results] = (await pool.execute('SELECT COUNT(`id`) AS `count` FROM `events`;')) as [[{'count': number}], FieldPacket[]] ;
+
+    const numberOfEvents = results[0].count;
+
+    expect(events).not.toEqual([]);
+    expect(events[0].id).toBeDefined();
+    expect(events.length).toBe(numberOfEvents);
+});
+
+it('should returns data without "link", "lat" and "lon".', async () => {
+    const events = await EventRecord.getAll();
+
+    expect((events[0] as EventEntity).link).toBeUndefined();
+    expect((events[0] as EventEntity).lat).toBeUndefined();
+    expect((events[0] as EventEntity).lon).toBeUndefined();
+})
+
+it('should returns array of found entries.', async () => {
+    const events = await EventRecord.findAll('');
+
+    expect(events).not.toEqual([]);
+    expect(events[0].id).toBeDefined();
+});
+
+it('should returns array of found entries when searching for "Test".', async () => {
+    const events = await EventRecord.findAll('Test');
+
+    expect(events).not.toEqual([]);
+    expect(events[0].id).toBeDefined();
+});
+
+it('should returns empty array when searching for something that does not exists.', async () => {
+   const events = await EventRecord.findAll('xxx');
+
+   expect(events).toEqual([]);
+});
+
+it('should returns data without "description", "isChosen", "estimatedTime" and "link".', async () => {
+    const events = await EventRecord.findAll('');
+
+    expect((events[0] as EventEntity).description).toBeUndefined();
+    expect((events[0] as EventEntity).isChosen).toBeUndefined();
+    expect((events[0] as EventEntity).estimatedTime).toBeUndefined();
+    expect((events[0] as EventEntity).link).toBeUndefined();
+});
+

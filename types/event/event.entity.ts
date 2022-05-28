@@ -18,3 +18,5 @@ export interface NewEventEntity extends Omit<EventEntity, 'id' | 'isChosen' | 'e
     estimated_time: number;
     link?: string | null;
 }
+
+export type MainEventEntity = Omit<EventEntity, 'link' | 'lat' | 'lon'>

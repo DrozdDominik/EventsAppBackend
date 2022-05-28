@@ -1,10 +1,12 @@
 import { FieldPacket } from 'mysql2/promise';
 import { v4 as uuid } from 'uuid';
-import {EventEntity, NewEventEntity} from "../types";
+import {EventEntity, MainEventEntity, NewEventEntity, SimpleEventEntity} from "../types";
 import { pool } from '../utils/db';
 import {AppError} from "../utils/error";
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
+type MainEventRecordResults = [MainEventEntity[], FieldPacket[]];
+type SimpleEventRecordResults = [SimpleEventEntity[], FieldPacket[]];
 
 export class EventRecord implements EventEntity{
     private readonly _id?: string;
@@ -180,5 +182,35 @@ export class EventRecord implements EventEntity{
         )) as EventRecordResults;
 
         return results.length === 0 ? null : new EventRecord(results[0]);
+    }
+
+    public static async getAll(): Promise<MainEventEntity[]> {
+        const [results] = (await pool.execute(
+            'SELECT `id`, `name`, `description`, `is_chosen`, `estimated_time` FROM `events`;',
+        )) as MainEventRecordResults;
+
+        return results.map((result) => {
+            const {id, name, description, isChosen, estimatedTime} = result;
+
+            return {
+              id, name, description, isChosen, estimatedTime,
+            };
+        });
+    }
+
+    public static async findAll(name: string): Promise<SimpleEventEntity[]> {
+        const [results] = (await pool.execute(
+            'SELECT `id`, `name`, `lat`, `lon` FROM `events` WHERE `name` LIKE :search;', {
+                search: `%${name}%`,
+            }
+        )) as SimpleEventRecordResults;
+
+        return results.map((result) => {
+            const {id, name,lat, lon} = result;
+
+            return {
+                id, name, lat, lon,
+            };
+        });
     }
 }
