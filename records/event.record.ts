@@ -3,6 +3,8 @@ import { v4 as uuid } from 'uuid';
 import {EventEntity, MainEventEntity, NewEventEntity, SimpleEventEntity} from "../types";
 import { pool } from '../utils/db';
 import {AppError} from "../utils/error";
+import {UpdateProperty} from "../types/event/event-update";
+import {convertToSnakeCase} from "../utils/auxiliaryMethods";
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
 type MainEventRecordResults = [MainEventEntity[], FieldPacket[]];
@@ -221,6 +223,35 @@ export class EventRecord implements EventEntity{
                 id: this._id,
             },
         )) as [ResultSetHeader, FieldPacket[]];
+
+        return results.affectedRows === 1;
+    }
+
+    public async update(columnsToUpdate: string[]): Promise<boolean> {
+        if (this.validationErrors.length > 0) {
+            throw new AppError(this.validationErrors.join('|'), 422);
+        }
+
+        let sql = 'UPDATE `events` SET';
+
+        columnsToUpdate.forEach(column => sql += ` ${convertToSnakeCase(column)} = :${column},`);
+
+        sql = sql.substring(0, sql.length - 1);
+
+        sql += ' WHERE id = :id;';
+
+        const data = columnsToUpdate.reduce(
+            (obj, key: UpdateProperty) => ({
+                ...obj,
+                [key]: this[`_${key}`],
+            }),
+            {},
+        );
+
+        const [results] = (await pool.execute(sql, {
+            id: this._id,
+            ...data,
+        })) as [ResultSetHeader, FieldPacket[]];
 
         return results.affectedRows === 1;
     }

@@ -13,7 +13,7 @@ const defaultObj: NewEventEntity = {
     lon: 50.03,
 }
 
-const objToDelete: NewEventEntity = {
+const objToTests: NewEventEntity = {
     name: "Delete me",
     description: "Testing delete functionality.",
     estimated_time: 45,
@@ -98,10 +98,27 @@ it('should returns data without "description", "isChosen", "estimatedTime" and "
 });
 
 it('should returns true when delete operation succeed', async () => {
-    const event = new EventRecord(objToDelete);
+    const event = new EventRecord(objToTests);
     await event.insert();
 
     const result = await event.delete();
 
     expect(result).toBe(true);
-})
+});
+
+it('should returns true when update operation succeed', async () => {
+    const event = new EventRecord(objToTests);
+    await event.insert();
+
+    event.name = "Updated event";
+    event.description = "New content.";
+    event.isChosen = true;
+    event.estimatedTime = 88;
+    event.link = "https://example.link";
+
+    const updatedColumns = ['name', 'description', 'isChosen', 'estimatedTime', 'link'];
+
+    const result = await event.update(updatedColumns);
+
+    expect(result).toBe(true);
+});
