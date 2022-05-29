@@ -12,6 +12,20 @@ app.use(handleNotFound);
 
 app.use(handleError);
 
-app.listen(config.port, '127.0.0.1', () => {
+process.on('uncaughtException', (err: Error) => {
+    console.log('Unhandled exception! Shutting down...');
+    console.log(err.name, err.message);
+    process.exit(1);
+});
+
+const server = app.listen(config.port, '127.0.0.1', () => {
     console.log(`Server is running on port ${config.port}`);
+});
+
+process.on('unhandledRejection', (err: Error) => {
+    console.log('Unhandled rejection! Shutting down...');
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
 });
