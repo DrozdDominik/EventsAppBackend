@@ -13,6 +13,14 @@ const defaultObj: NewEventEntity = {
     lon: 50.03,
 }
 
+const objToDelete: NewEventEntity = {
+    name: "Delete me",
+    description: "Testing delete functionality.",
+    estimated_time: 45,
+    lat: 20.44,
+    lon: 34.87,
+}
+
 beforeAll(async () => {
     await pool.execute("DELETE FROM `events` WHERE `name` LIKE 'Test%'");
 });
@@ -89,3 +97,11 @@ it('should returns data without "description", "isChosen", "estimatedTime" and "
     expect((events[0] as EventEntity).link).toBeUndefined();
 });
 
+it('should returns true when delete operation succeed', async () => {
+    const event = new EventRecord(objToDelete);
+    await event.insert();
+
+    const result = await event.delete();
+
+    expect(result).toBe(true);
+})

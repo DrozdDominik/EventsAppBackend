@@ -1,4 +1,4 @@
-import { FieldPacket } from 'mysql2/promise';
+import { FieldPacket, ResultSetHeader } from 'mysql2/promise';
 import { v4 as uuid } from 'uuid';
 import {EventEntity, MainEventEntity, NewEventEntity, SimpleEventEntity} from "../types";
 import { pool } from '../utils/db';
@@ -212,5 +212,16 @@ export class EventRecord implements EventEntity{
                 id, name, lat, lon,
             };
         });
+    }
+
+    public async delete(): Promise<boolean> {
+        const [results] = (await pool.execute(
+            'DELETE FROM `events` WHERE `id` = :id;',
+            {
+                id: this._id,
+            },
+        )) as [ResultSetHeader, FieldPacket[]];
+
+        return results.affectedRows === 1;
     }
 }
