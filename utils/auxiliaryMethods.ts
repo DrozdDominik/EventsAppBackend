@@ -1,11 +1,4 @@
-export const convertToSnakeCase = (word: string): string => {
-    if(/[A-Z]/.test(word)) {
-        const result = word.match(/[A-Z]/g);
-        const uppercaseLetter = result[0];
+export const convertCamelCaseToSnakeCase = (word: string): string => word.split('')
+    .map(letter => /[A-Z]/.test(letter) ? `_${letter.toLowerCase()}` : letter)
+    .join('');
 
-        return uppercaseLetter === "C"
-            ? word.replace(/C/, `_${uppercaseLetter.toLowerCase()}`)
-            : word.replace(/T/, `_${uppercaseLetter.toLowerCase()}`);
-    }
-    return word;
-}

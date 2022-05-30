@@ -4,7 +4,7 @@ import {EventEntity, MainEventEntity, NewEventEntity, SimpleEventEntity} from ".
 import { pool } from '../utils/db';
 import {AppError} from "../utils/error";
 import {UpdateProperty} from "../types/event/event-update";
-import {convertToSnakeCase} from "../utils/auxiliaryMethods";
+import {convertCamelCaseToSnakeCase} from "../utils/auxiliaryMethods";
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
 type MainEventRecordResults = [MainEventEntity[], FieldPacket[]];
@@ -234,7 +234,7 @@ export class EventRecord implements EventEntity{
 
         let sql = 'UPDATE `events` SET';
 
-        columnsToUpdate.forEach(column => sql += ` ${convertToSnakeCase(column)} = :${column},`);
+        columnsToUpdate.forEach(column => sql += ` ${convertCamelCaseToSnakeCase(column)} = :${column},`);
 
         sql = sql.substring(0, sql.length - 1);
 
