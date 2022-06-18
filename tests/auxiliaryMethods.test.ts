@@ -1,18 +1,18 @@
-import {it, expect} from 'vitest';
-import {convertCamelCaseToSnakeCase} from "../utils/auxiliaryMethods";
+import { it, expect } from 'vitest';
+import { convertCamelCaseToSnakeCase } from '../utils/auxiliaryMethods';
 
 it('should convert caseCase string to snake_case string.', () => {
-    const testString = 'estimatedTime';
+  const testString = 'estimatedTime';
 
-    const result = convertCamelCaseToSnakeCase(testString);
+  const result = convertCamelCaseToSnakeCase(testString);
 
-    expect(result).toBe('estimated_time');
+  expect(result).toBe('estimated_time');
 });
 
 it('should not change string without upperCase', () => {
-    const testString = 'description';
+  const testString = 'description';
 
-    const result = convertCamelCaseToSnakeCase(testString);
+  const result = convertCamelCaseToSnakeCase(testString);
 
-    expect(result).toBe(testString);
+  expect(result).toBe(testString);
 });
