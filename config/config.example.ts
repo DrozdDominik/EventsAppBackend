@@ -6,6 +6,7 @@
     dbPassword: 'password',
     dbDatabase: 'database',
     port: 3001,
+    passwordSalt: 'salt',
 };
 
  */
