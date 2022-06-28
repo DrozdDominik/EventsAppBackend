@@ -54,7 +54,7 @@ describe('EventRecord.insert()', () => {
 
     expect(foundEvent).toBeDefined();
     expect(foundEvent).not.toBeNull();
-    expect(foundEvent.id).toBe(event.id);
+    expect(foundEvent.eventId).toBe(event.eventId);
   });
 });
 
@@ -128,11 +128,11 @@ describe('EventRecord.update()', () => {
     const event = new EventRecord(objToTests);
     await event.insert();
 
-    event.name = 'Updated event';
-    event.description = 'New content.';
-    event.isChosen = true;
-    event.estimatedTime = 88;
-    event.link = 'https://example.link';
+    event.eventName = 'Updated event';
+    event.eventDescription = 'New content.';
+    event.isEventChosen = true;
+    event.eventEstimatedTime = 88;
+    event.eventLink = 'https://example.link';
 
     const updatedColumns = ['name', 'description', 'isChosen', 'estimatedTime', 'link'];
 

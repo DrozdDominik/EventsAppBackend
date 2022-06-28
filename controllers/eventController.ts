@@ -69,23 +69,23 @@ export const updateEvent = async (req: Request, res: Response) => {
   const keys = Object.keys(obj);
 
   if (obj.name) {
-    event.name = obj.name;
+    event.eventName = obj.name;
   }
 
   if (obj.description) {
-    event.description = obj.description;
+    event.eventDescription = obj.description;
   }
 
   if (obj.isChosen) {
-    event.isChosen = obj.isChosen;
+    event.isEventChosen = obj.isChosen;
   }
 
   if (obj.estimatedTime) {
-    event.estimatedTime = obj.estimatedTime;
+    event.eventEstimatedTime = obj.estimatedTime;
   }
 
   if (obj.link || obj.link === '') {
-    event.link = obj.link;
+    event.eventLink = obj.link;
   }
 
   if (!(await event.update(keys))) {

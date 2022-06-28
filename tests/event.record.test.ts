@@ -13,11 +13,13 @@ const defaultObj: NewEventEntity = {
 it('should build EventRecord', () => {
   const event = new EventRecord(defaultObj);
 
-  expect(typeof event.id).toBe('string');
-  expect(event.isChosen).toBe(false);
-  expect(event.link).toBeNull();
-  expect(event.name).toBe('Test event');
-  expect(event.description).toBe('Test event description');
-  expect(event.estimatedTime).toBe(180);
+  expect(typeof event.eventId).toBe('string');
+  expect(event.isEventChosen).toBe(false);
+  expect(event.eventLink).toBeNull();
+  expect(event.eventName).toBe(defaultObj.name);
+  expect(event.eventDescription).toBe(defaultObj.description);
+  expect(event.eventEstimatedTime).toBe(defaultObj.estimated_time);
+  expect(event.eventLat).toBe((defaultObj.lat));
+  expect(event.eventLon).toBe((defaultObj.lon));
 });
 
