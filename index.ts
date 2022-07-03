@@ -1,15 +1,21 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import 'express-async-errors';
 import './utils/db';
+import './auth/jwt.stategy';
 import { config } from './config/config';
 import { handleError, handleNotFound } from './utils/error';
 import { eventRouter } from './routers/event.router';
+import { userRouter } from './routers/user.router';
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+
 
 app.use('/api/event', eventRouter);
+app.use('/user', userRouter);
 
 app.use(handleNotFound);
 

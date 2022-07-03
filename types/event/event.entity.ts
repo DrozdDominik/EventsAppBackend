@@ -12,10 +12,9 @@ export interface EventEntity extends SimpleEventEntity {
   link: string | null;
 }
 
-export interface NewEventEntity extends Omit<EventEntity, 'id' | 'isChosen' | 'estimatedTime' | 'link'> {
+export interface NewEventEntity extends Omit<EventEntity, 'id' | 'isChosen' | 'link'> {
   id?: string;
-  is_chosen?: boolean;
-  estimated_time: number;
+  isChosen?: boolean;
   link?: string | null;
 }
 

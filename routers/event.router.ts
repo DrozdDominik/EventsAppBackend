@@ -1,14 +1,15 @@
 import { Router } from 'express';
 import { methodNotAllowed } from '../utils/error';
 import { addEvent, deleteEvent, getAllEvents, getEvent, updateEvent } from '../controllers/eventController';
+import { auth } from '../auth/auth';
 
 export const eventRouter = Router();
 
-eventRouter.route('/').get(getAllEvents).post(addEvent).all(methodNotAllowed);
+eventRouter.route('/').get(auth, getAllEvents).post(auth, addEvent).all(methodNotAllowed);
 
 eventRouter
   .route('/:id')
-  .get(getEvent)
-  .delete(deleteEvent)
-  .patch(updateEvent)
+  .get(auth, getEvent)
+  .delete(auth, deleteEvent)
+  .patch(auth, updateEvent)
   .all(methodNotAllowed);

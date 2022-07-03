@@ -23,7 +23,7 @@ export class EventRecord {
 
   constructor(obj: NewEventEntity) {
     this.id = obj.id ?? uuid();
-    this.isChosen = obj.is_chosen ?? false;
+    this.isChosen = obj.isChosen ?? false;
     this.link = obj.link ?? null;
 
     if (!obj.name || obj.name.length < 3 || obj.name.length > 50) {
@@ -42,7 +42,7 @@ export class EventRecord {
       );
     }
 
-    if (obj.estimated_time <= 0) {
+    if (obj.estimatedTime <= 0) {
       this.validationErrors.push(
         'Event estimated time must be greater then zero.',
       );
@@ -60,7 +60,7 @@ export class EventRecord {
 
     this.name = obj.name;
     this.description = obj.description;
-    this.estimatedTime = obj.estimated_time;
+    this.estimatedTime = obj.estimatedTime;
     this.lat = obj.lat;
     this.lon = obj.lon;
   }
