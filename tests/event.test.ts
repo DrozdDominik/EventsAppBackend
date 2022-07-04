@@ -8,8 +8,8 @@ import { FieldPacket } from 'mysql2/promise';
 const defaultObj: NewEventEntity = {
   name: 'Test event name',
   description: 'Dummy description',
-  is_chosen: true,
-  estimated_time: 150,
+  isChosen: true,
+  estimatedTime: 150,
   lat: 21.23,
   lon: 50.03,
 };
@@ -17,7 +17,7 @@ const defaultObj: NewEventEntity = {
 const objToTests: NewEventEntity = {
   name: 'Delete me',
   description: 'Testing delete functionality.',
-  estimated_time: 45,
+  estimatedTime: 45,
   lat: 20.44,
   lon: 34.87,
 };

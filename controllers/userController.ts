@@ -39,7 +39,7 @@ export const logout = async (req: Request, res: Response) => {
   const currentTokenId: string = decodedJwt.id;
 
   try {
-    const user = await UserRecord.getOneByToken(currentTokenId);
+    const user = await UserRecord.findOneByToken(currentTokenId);
 
     user.userCurrentTokenId = null;
 

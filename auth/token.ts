@@ -16,7 +16,7 @@ export const createToken = (currentTokenId: string): { accessToken: string, expi
 
 export const generateToken = async (user: UserRecord): Promise<string> => {
   let token: string;
-  let userWithThisToken: boolean | null = null;
+  let userWithThisToken: UserRecord | null = null;
 
   do {
     token = uuid();

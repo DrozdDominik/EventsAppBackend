@@ -95,17 +95,6 @@ export class UserRecord {
     return this.id;
   }
 
-  public static async getOneByToken(token: string): Promise<UserRecord> | null {
-    const [results] = (await pool.execute(
-      'SELECT * FROM `users` WHERE `current_token_id` = :token;',
-      {
-        token,
-      },
-    )) as UserRecordResults;
-
-    return results.length === 0 ? null : new UserRecord(results[0]);
-  }
-
   public static async findOneByCredentials(email: string, password: string): Promise<UserRecord> | null {
 
     const [results] = (await pool.execute(
@@ -119,16 +108,17 @@ export class UserRecord {
     return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
-  public static async findOneByToken(token: string): Promise<boolean> {
+  public static async findOneByToken(token: string): Promise<UserRecord> | null {
     const [results] = (await pool.execute(
-      'SELECT `id` FROM `users` WHERE `current_token_id` = :token;',
+      'SELECT * FROM `users` WHERE `current_token_id` = :token;',
       {
         token,
       },
     )) as UserRecordResults;
 
-    return results.length !== 0;
+    return results.length === 0 ? null : new UserRecord(results[0]);
   }
+
 
   public async updateUserTokenId(): Promise<boolean> {
     const [results] = (await pool.execute(
