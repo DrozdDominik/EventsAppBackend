@@ -1,13 +1,13 @@
 import { FieldPacket, ResultSetHeader } from 'mysql2/promise';
-import { v4 as uuid } from 'uuid';
-import { MainEventEntity, NewEventEntity, SimpleEventEntity } from '../types';
+import { v4 as uuid, validate } from 'uuid';
+import { MainEventData, MainEventEntityResult, NewEventEntity, SimpleEventEntity } from '../types';
 import { pool } from '../utils/db';
 import { AppError } from '../utils/error';
 import { UpdateProperty } from '../types/event/event-update';
 import { convertCamelCaseToSnakeCase } from '../utils/auxiliaryMethods';
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
-type MainEventRecordResults = [MainEventEntity[], FieldPacket[]];
+type MainEventRecordResults = [MainEventEntityResult[], FieldPacket[]];
 type SimpleEventRecordResults = [SimpleEventEntity[], FieldPacket[]];
 
 export class EventRecord {
@@ -19,6 +19,7 @@ export class EventRecord {
   private link: string | null;
   private lat: number;
   private lon: number;
+  private userId: string;
   public validationErrors: string[] = [];
 
   constructor(obj: NewEventEntity) {
@@ -54,6 +55,12 @@ export class EventRecord {
       );
     }
 
+    if (!obj.userId || !validate(obj.userId)) {
+      this.validationErrors.push(
+        'Invalid userId.',
+      );
+    }
+
     if (this.validationErrors.length > 0) {
       throw new AppError(this.validationErrors.join('|'), 422);
     }
@@ -63,6 +70,7 @@ export class EventRecord {
     this.estimatedTime = obj.estimatedTime;
     this.lat = obj.lat;
     this.lon = obj.lon;
+    this.userId = obj.userId;
   }
 
   get eventId() {
@@ -157,9 +165,20 @@ export class EventRecord {
     this.lon = lon;
   }
 
+  get eventUserId() {
+    return this.userId;
+  }
+
+  set eventUserId(userId: string) {
+    if (!validate(userId)) {
+      throw new AppError('Invalid userId', 400);
+    }
+    this.userId = userId;
+  }
+
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon);',
+      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id);',
       {
         id: this.id,
         name: this.name,
@@ -169,6 +188,7 @@ export class EventRecord {
         link: this.link,
         lat: this.lat,
         lon: this.lon,
+        user_id: this.userId,
       },
     );
 
@@ -186,16 +206,21 @@ export class EventRecord {
     return results.length === 0 ? null : new EventRecord(results[0]);
   }
 
-  public static async getAll(): Promise<MainEventEntity[]> {
+  public static async getAll(): Promise<MainEventData[]> {
     const [results] = (await pool.execute(
-      'SELECT `id`, `name`, `description`, `is_chosen`, `estimated_time` FROM `events`;',
+      'SELECT `id`, `name`, `description`, `is_chosen`, `estimated_time`, `user_id` FROM `events`;',
     )) as MainEventRecordResults;
 
     return results.map((result) => {
-      const { id, name, description, isChosen, estimatedTime } = result;
+      const { id, name, description, is_chosen, estimated_time, user_id } = result;
 
       return {
-        id, name, description, isChosen, estimatedTime,
+        id,
+        name,
+        description,
+        isChosen: is_chosen,
+        estimatedTime: estimated_time,
+        userId: user_id,
       };
     });
   }

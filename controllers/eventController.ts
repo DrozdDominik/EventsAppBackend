@@ -4,6 +4,8 @@ import { NewEventEntity } from '../types';
 import { AppError } from '../utils/error';
 import { EventUpdate } from '../types/event/event-update';
 import { validate } from 'uuid';
+import { UserRecord } from '../records/user.record';
+import { getTokenFromCookie } from '../auth/token';
 
 export const getAllEvents = async (req: Request, res: Response) => {
   const events = await EventRecord.getAll();
@@ -11,8 +13,21 @@ export const getAllEvents = async (req: Request, res: Response) => {
 };
 
 export const addEvent = async (req: Request, res: Response) => {
-  const event = new EventRecord(req.body as NewEventEntity);
+  const currentTokenId = getTokenFromCookie(req);
+
+  const user = await UserRecord.findOneByToken(currentTokenId);
+
+  const userId = user.userId;
+
+  const obj: NewEventEntity = {
+    ...req.body,
+    userId,
+  };
+
+  const event = new EventRecord(obj);
+
   await event.insert();
+
   res.status(201).json(event);
 };
 
@@ -57,7 +72,7 @@ export const updateEvent = async (req: Request, res: Response) => {
   const obj: EventUpdate = req.body;
 
   if (!validate(id)) {
-    return res.status(400).json('Provided invalid event id.');
+    throw new AppError('Provided invalid event id.', 400);
   }
 
   const event = await EventRecord.getOne(id);

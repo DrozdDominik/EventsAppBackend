@@ -79,6 +79,20 @@ export class UserRecord {
     this.currentTokenId = tokenId;
   }
 
+  set userEmail(email: string) {
+    if(!isEmailValid(email)) {
+      throw new AppError('Provided email is not valid.', 400);
+    }
+    this.email = email;
+  }
+
+  set userPassword(password: string) {
+    if(!isPasswordValid(password)) {
+      throw new AppError('Provided password is not valid.', 400);
+    }
+    this.passwordHash = hashPassword(password);
+  }
+
   public async insert(): Promise<string> {
     await pool.execute(
       'INSERT INTO `users` VALUES (:id, :name, :email, :password_hash, :current_token_id, :role);',
@@ -98,7 +112,7 @@ export class UserRecord {
   public static async findOneByCredentials(email: string, password: string): Promise<UserRecord> | null {
 
     const [results] = (await pool.execute(
-      'SELECT * FROM `users` WHERE `email` = :email AND `password_hash` = :passwordHash;',
+      'SELECT `id`, `name`, `email`, `current_token_id`, `role` FROM `users` WHERE `email` = :email AND `password_hash` = :passwordHash;',
       {
         email,
         passwordHash: hashPassword(password),
@@ -125,6 +139,30 @@ export class UserRecord {
         'UPDATE `users` SET `current_token_id` = :token WHERE `id` = :id;',
         {
           token: this.userCurrentTokenId,
+          id: this.id,
+        })
+    ) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1;
+  }
+
+  public async updateUserEmail(): Promise<boolean> {
+    const [results] = (await pool.execute(
+        'UPDATE `users` SET `email` = :email WHERE `id` = :id;',
+        {
+          email: this.email,
+          id: this.id,
+        })
+    ) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1;
+  }
+
+  public async updateUserPassword(): Promise<boolean> {
+    const [results] = (await pool.execute(
+        'UPDATE `users` SET `password_hash` = :passwordHash WHERE `id` = :id;',
+        {
+          passwordHash: this.email,
           id: this.id,
         })
     ) as [ResultSetHeader, FieldPacket[]];

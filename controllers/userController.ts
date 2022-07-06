@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { decode } from 'jsonwebtoken';
 import { UserRecord } from '../records/user.record';
 import { AppError } from '../utils/error';
-import { createToken, generateToken } from '../auth/token';
+import { createToken, generateToken, getTokenFromCookie, removeToken } from '../auth/token';
 import { NewUserEntity } from '../types';
 
 export const register = async (req: Request, res: Response) => {
@@ -19,7 +18,6 @@ export const login = async (req: Request, res: Response) => {
   if (!user) {
     throw new AppError('Invalid credentials.', 401);
   }
-
   const token = createToken(await generateToken(user));
 
   return res
@@ -32,28 +30,41 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  const accessToken = req.cookies.jwt;
+  const currentTokenId = getTokenFromCookie(req);
 
-  const decodedJwt = decode(accessToken, { json: true });
+  const user = await UserRecord.findOneByToken(currentTokenId);
 
-  const currentTokenId: string = decodedJwt.id;
+  await removeToken(user, res);
+};
 
-  try {
-    const user = await UserRecord.findOneByToken(currentTokenId);
+export const changeEmail = async (req: Request, res: Response) => {
+  const email: string = req.body.email;
 
-    user.userCurrentTokenId = null;
+  const currentTokenId = getTokenFromCookie(req);
 
-    await user.updateUserTokenId();
+  const user = await UserRecord.findOneByToken(currentTokenId);
 
-    return res
-      .clearCookie('jwt', {
-        secure: false,
-        domain: 'localhost',
-        httpOnly: true,
-      })
-      .json({ ok: true });
+  user.userEmail = email;
 
-  } catch (e) {
-    return res.json({ error: e.message });
+  if (!await user.updateUserEmail()) {
+    throw new AppError('Sorry update operation failed.', 500);
   }
+
+  await removeToken(user, res);
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  const password: string = req.body.password;
+
+  const currentTokenId = getTokenFromCookie(req);
+
+  const user = await UserRecord.findOneByToken(currentTokenId);
+
+  user.userPassword = password;
+
+  if (!await user.updateUserPassword()) {
+    throw new AppError('Sorry update operation failed.', 500);
+  }
+
+  await removeToken(user, res);
 };
