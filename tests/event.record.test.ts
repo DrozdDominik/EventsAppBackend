@@ -1,6 +1,7 @@
 import { it, expect } from 'vitest';
 import { NewEventEntity } from '../types';
 import { EventRecord } from '../records/event.record';
+import { faker } from '@faker-js/faker';
 
 const defaultObj: NewEventEntity = {
   name: 'Test event',
@@ -8,6 +9,7 @@ const defaultObj: NewEventEntity = {
   estimatedTime: 180,
   lat: 20,
   lon: 50,
+  userId: faker.datatype.uuid(),
 };
 
 it('should build EventRecord', () => {

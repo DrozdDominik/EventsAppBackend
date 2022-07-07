@@ -1,10 +1,16 @@
 import { FieldPacket, ResultSetHeader } from 'mysql2/promise';
 import { v4 as uuid, validate } from 'uuid';
-import { MainEventData, MainEventEntityResult, NewEventEntity, SimpleEventEntity } from '../types';
+import {
+  MainEventData,
+  MainEventEntityResult,
+  NewEventEntity,
+  NewEventEntityProperties,
+  SimpleEventEntity,
+} from '../types';
 import { pool } from '../utils/db';
 import { AppError } from '../utils/error';
 import { UpdateProperty } from '../types/event/event-update';
-import { convertCamelCaseToSnakeCase } from '../utils/auxiliaryMethods';
+import { convertCamelCaseToSnakeCase, convertSnakeCaseToCamelCase } from '../utils/auxiliaryMethods';
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
 type MainEventRecordResults = [MainEventEntityResult[], FieldPacket[]];
@@ -203,7 +209,19 @@ export class EventRecord {
       },
     )) as EventRecordResults;
 
-    return results.length === 0 ? null : new EventRecord(results[0]);
+    if (results.length === 0) {
+      return null;
+    } else {
+      const correctObj = Object.keys(results[0]).reduce(
+        (obj, key: NewEventEntityProperties) => ({
+          ...obj,
+          [convertSnakeCaseToCamelCase(key)]: results[0][key],
+        }),
+        {},
+      );
+
+      return new EventRecord(correctObj as NewEventEntity);
+    }
   }
 
   public static async getAll(): Promise<MainEventData[]> {

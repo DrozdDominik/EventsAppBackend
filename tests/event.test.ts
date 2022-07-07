@@ -12,6 +12,7 @@ const defaultObj: NewEventEntity = {
   estimatedTime: 150,
   lat: 21.23,
   lon: 50.03,
+  userId: faker.datatype.uuid(),
 };
 
 const objToTests: NewEventEntity = {
@@ -20,6 +21,7 @@ const objToTests: NewEventEntity = {
   estimatedTime: 45,
   lat: 20.44,
   lon: 34.87,
+  userId: faker.datatype.uuid(),
 };
 
 afterAll(async () => {
@@ -38,23 +40,12 @@ describe('EventRecord.getOne()', () => {
 });
 
 describe('EventRecord.insert()', () => {
-  it('should returns new UUID.', async () => {
+   it('should returns new UUID.', async () => {
     const event = new EventRecord(defaultObj);
     const id = await event.insert();
 
     expect(id).toBeDefined();
     expect(typeof id).toBe('string');
-  });
-
-  it('should inserts data to database.', async () => {
-    const event = new EventRecord(defaultObj);
-    const id = await event.insert();
-
-    const foundEvent = await EventRecord.getOne(id);
-
-    expect(foundEvent).toBeDefined();
-    expect(foundEvent).not.toBeNull();
-    expect(foundEvent.eventId).toBe(event.eventId);
   });
 });
 

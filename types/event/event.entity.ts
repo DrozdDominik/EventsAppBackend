@@ -19,6 +19,8 @@ export interface NewEventEntity extends Omit<EventEntity, 'id' | 'isChosen' | 'l
   link?: string | null;
 }
 
+export type NewEventEntityProperties = keyof NewEventEntity;
+
 export interface MainEventEntityResult {
   id: string;
   name: string;

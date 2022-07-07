@@ -1,5 +1,10 @@
 import { it, expect, describe } from 'vitest';
-import { convertCamelCaseToSnakeCase, isEmailValid, isPasswordValid } from '../utils/auxiliaryMethods';
+import {
+  convertCamelCaseToSnakeCase,
+  convertSnakeCaseToCamelCase,
+  isEmailValid,
+  isPasswordValid,
+} from '../utils/auxiliaryMethods';
 
 describe('convertCamelCaseToSnakeCase()', () => {
   it('should convert caseCase string to snake_case string.', () => {
@@ -14,6 +19,24 @@ describe('convertCamelCaseToSnakeCase()', () => {
     const testString = 'description';
 
     const result = convertCamelCaseToSnakeCase(testString);
+
+    expect(result).toBe(testString);
+  });
+});
+
+describe('convertSnakeCaseToCamelCase()', () => {
+  it('should convert snake_case string to camelCase string.', () => {
+    const testString = 'estimated_time';
+
+    const result = convertSnakeCaseToCamelCase(testString);
+
+    expect(result).toBe('estimatedTime');
+  });
+
+  it('should not change string without underscore', () => {
+    const testString = 'description';
+
+    const result = convertSnakeCaseToCamelCase(testString);
 
     expect(result).toBe(testString);
   });

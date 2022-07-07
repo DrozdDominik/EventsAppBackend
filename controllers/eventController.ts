@@ -35,7 +35,7 @@ export const getEvent = async (req: Request, res: Response) => {
   const id = req.params.id;
 
   if (!validate(id)) {
-    return res.status(400).json('Provided invalid event id.');
+    throw new AppError('Provided invalid event id', 400);
   }
 
   const event = await EventRecord.getOne(id);
@@ -51,7 +51,7 @@ export const deleteEvent = async (req: Request, res: Response) => {
   const id = req.params.id;
 
   if (!validate(id)) {
-    return res.status(400).json('Provided invalid event id.');
+    throw new AppError('Provided invalid event id', 400);
   }
 
   const event = await EventRecord.getOne(id);
