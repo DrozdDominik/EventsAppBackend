@@ -1,8 +1,8 @@
 import { v4 as uuid } from 'uuid';
-import { decode, JwtPayload, sign } from 'jsonwebtoken';
+import { JwtPayload, sign } from 'jsonwebtoken';
 import { config } from '../config/config';
 import { UserRecord } from '../records/user.record';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 export const createToken = (currentTokenId: string): { accessToken: string, expiresIn: number } => {
   const payload: JwtPayload = { id: currentTokenId };
@@ -31,15 +31,7 @@ export const generateToken = async (user: UserRecord): Promise<string> => {
   return token;
 };
 
-export const getTokenFromCookie = (req: Request): string => {
-  const accessToken = req.cookies.jwt;
-
-  const decodedJwt = decode(accessToken, { json: true });
-
-  return decodedJwt.id;
-}
-
-export const removeToken = async(user: UserRecord, res: Response): Promise<Response> => {
+export const removeToken = async (user: UserRecord, res: Response): Promise<Response> => {
   user.userCurrentTokenId = null;
 
   await user.updateUserTokenId();
@@ -51,4 +43,4 @@ export const removeToken = async(user: UserRecord, res: Response): Promise<Respo
       httpOnly: true,
     })
     .json({ ok: true });
-}
+};

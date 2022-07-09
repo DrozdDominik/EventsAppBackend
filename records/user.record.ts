@@ -80,17 +80,21 @@ export class UserRecord {
   }
 
   set userEmail(email: string) {
-    if(!isEmailValid(email)) {
+    if (!isEmailValid(email)) {
       throw new AppError('Provided email is not valid.', 400);
     }
     this.email = email;
   }
 
   set userPassword(password: string) {
-    if(!isPasswordValid(password)) {
+    if (!isPasswordValid(password)) {
       throw new AppError('Provided password is not valid.', 400);
     }
     this.passwordHash = hashPassword(password);
+  }
+
+  get userRole() {
+    return this.role;
   }
 
   public async insert(): Promise<string> {
@@ -133,7 +137,6 @@ export class UserRecord {
     return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
-
   public async updateUserTokenId(): Promise<boolean> {
     const [results] = (await pool.execute(
         'UPDATE `users` SET `current_token_id` = :token WHERE `id` = :id;',
@@ -168,5 +171,17 @@ export class UserRecord {
     ) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1;
+  }
+
+  public async updateUserName(): Promise<string | null> {
+    const [results] = (await pool.execute(
+        'UPDATE `users` SET `name` = :name WHERE `id` = :id;',
+        {
+          name: this.name,
+          id: this.id,
+        })
+    ) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1 ? this.name : null;
   }
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserRecord } from '../records/user.record';
 import { AppError } from '../utils/error';
-import { createToken, generateToken, getTokenFromCookie, removeToken } from '../auth/token';
+import { createToken, generateToken, removeToken } from '../auth/token';
 import { NewUserEntity } from '../types';
 
 export const register = async (req: Request, res: Response) => {
@@ -30,9 +30,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  const currentTokenId = getTokenFromCookie(req);
-
-  const user = await UserRecord.findOneByToken(currentTokenId);
+  const user = req.user as UserRecord;
 
   await removeToken(user, res);
 };
@@ -40,9 +38,7 @@ export const logout = async (req: Request, res: Response) => {
 export const changeEmail = async (req: Request, res: Response) => {
   const email: string = req.body.email;
 
-  const currentTokenId = getTokenFromCookie(req);
-
-  const user = await UserRecord.findOneByToken(currentTokenId);
+  const user = req.user as UserRecord;
 
   user.userEmail = email;
 
@@ -56,9 +52,7 @@ export const changeEmail = async (req: Request, res: Response) => {
 export const changePassword = async (req: Request, res: Response) => {
   const password: string = req.body.password;
 
-  const currentTokenId = getTokenFromCookie(req);
-
-  const user = await UserRecord.findOneByToken(currentTokenId);
+  const user = req.user as UserRecord;
 
   user.userPassword = password;
 
@@ -67,4 +61,20 @@ export const changePassword = async (req: Request, res: Response) => {
   }
 
   await removeToken(user, res);
+};
+
+export const changeName = async (req: Request, res: Response) => {
+  const name: string = req.body.name;
+
+  const user = req.user as UserRecord;
+
+  user.userName = name;
+
+  const result: string | null = await user.updateUserName();
+
+  if (result === null) {
+    throw new AppError('Sorry update operation failed.', 500);
+  }
+
+  res.json({ name: result });
 };

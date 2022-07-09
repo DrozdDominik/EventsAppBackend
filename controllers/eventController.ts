@@ -5,7 +5,6 @@ import { AppError } from '../utils/error';
 import { EventUpdate } from '../types/event/event-update';
 import { validate } from 'uuid';
 import { UserRecord } from '../records/user.record';
-import { getTokenFromCookie } from '../auth/token';
 
 export const getAllEvents = async (req: Request, res: Response) => {
   const events = await EventRecord.getAll();
@@ -13,11 +12,7 @@ export const getAllEvents = async (req: Request, res: Response) => {
 };
 
 export const addEvent = async (req: Request, res: Response) => {
-  const currentTokenId = getTokenFromCookie(req);
-
-  const user = await UserRecord.findOneByToken(currentTokenId);
-
-  const userId = user.userId;
+  const userId = (req.user as UserRecord).userId;
 
   const obj: NewEventEntity = {
     ...req.body,
@@ -26,9 +21,9 @@ export const addEvent = async (req: Request, res: Response) => {
 
   const event = new EventRecord(obj);
 
-  await event.insert();
+  const eventId = await event.insert();
 
-  res.status(201).json(event);
+  res.status(201).json({ id: eventId });
 };
 
 export const getEvent = async (req: Request, res: Response) => {
