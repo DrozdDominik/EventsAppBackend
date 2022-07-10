@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { NewUserEntity, UserRole } from '../types';
+import { NewUserEntity, SimplyUserEntity, UserRole } from '../types';
 import { hashPassword, isEmailValid, isPasswordValid } from '../utils/auxiliaryMethods';
 import { AppError } from '../utils/error';
 import { pool } from '../utils/db';
@@ -7,6 +7,7 @@ import { FieldPacket } from 'mysql2/promise';
 import { ResultSetHeader } from 'mysql2';
 
 type UserRecordResults = [NewUserEntity[], FieldPacket[]];
+type SimplyUserRecordResult = [SimplyUserEntity[], FieldPacket[]];
 
 export class UserRecord {
 
@@ -15,7 +16,7 @@ export class UserRecord {
   private email: string;
   private passwordHash?: string;
   private currentTokenId: string | null;
-  private role: UserRole;
+  private readonly role: UserRole;
   public validationErrors: string[] = [];
 
   constructor(obj: NewUserEntity) {
@@ -183,5 +184,34 @@ export class UserRecord {
     ) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1 ? this.name : null;
+  }
+
+  public static async updateUserRole(id: string, role: UserRole): Promise<boolean> {
+    const [results] = (await pool.execute(
+        'UPDATE `users` SET `role` = :role WHERE `id` = :id;',
+        {
+          role,
+          id,
+        })
+    ) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1;
+  }
+
+  public static async getAll(): Promise<SimplyUserEntity[]> {
+    const [results] = (await pool.execute(
+        'SELECT `id`, `name`, `email`, `role` FROM `users`;')
+    ) as SimplyUserRecordResult;
+
+    return results.map((result) => {
+      const { id, name, email, role } = result;
+
+      return {
+        id,
+        name,
+        email,
+        role,
+      };
+    });
   }
 }

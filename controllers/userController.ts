@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserRecord } from '../records/user.record';
 import { AppError } from '../utils/error';
 import { createToken, generateToken, removeToken } from '../auth/token';
-import { NewUserEntity } from '../types';
+import { NewUserEntity, UserRole } from '../types';
 
 export const register = async (req: Request, res: Response) => {
   const user = new UserRecord(req.body as NewUserEntity);
@@ -77,4 +77,21 @@ export const changeName = async (req: Request, res: Response) => {
   }
 
   res.json({ name: result });
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  const users = await UserRecord.getAll();
+
+  res.json({ users });
+};
+
+export const changeRole = async (req: Request, res: Response) => {
+  const id: string = req.body.id;
+  const role: UserRole = req.body.role;
+
+  if (!await UserRecord.updateUserRole(id, role)) {
+    throw new AppError('Sorry update operation failed.', 500);
+  }
+
+  res.json({ ok: true });
 };

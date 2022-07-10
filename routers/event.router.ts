@@ -6,11 +6,11 @@ import { UserRole } from '../types';
 
 export const eventRouter = Router();
 
-eventRouter.route('/').get(auth, getAllEvents).post(auth, restrictTo(UserRole.Editor), addEvent).all(methodNotAllowed);
+eventRouter.route('/').get(auth, getAllEvents).post(auth, restrictTo(UserRole.Editor, UserRole.Admin), addEvent).all(methodNotAllowed);
 
 eventRouter
   .route('/:id')
   .get(auth, getEvent)
-  .delete(auth, deleteEvent)
-  .patch(auth, updateEvent)
+  .delete(auth, restrictTo(UserRole.Editor, UserRole.Admin), deleteEvent)
+  .patch(auth, restrictTo(UserRole.Editor, UserRole.Admin), updateEvent)
   .all(methodNotAllowed);

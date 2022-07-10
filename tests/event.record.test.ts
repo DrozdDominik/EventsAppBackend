@@ -21,7 +21,8 @@ it('should build EventRecord', () => {
   expect(event.eventName).toBe(defaultObj.name);
   expect(event.eventDescription).toBe(defaultObj.description);
   expect(event.eventEstimatedTime).toBe(defaultObj.estimatedTime);
-  expect(event.eventLat).toBe((defaultObj.lat));
-  expect(event.eventLon).toBe((defaultObj.lon));
+  expect(event.eventLat).toBe(defaultObj.lat);
+  expect(event.eventLon).toBe(defaultObj.lon);
+  expect(event.eventUserId).toBe(defaultObj.userId);
 });
 
