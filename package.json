@@ -1,25 +1,41 @@
 {
   "name": "event-app-back",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node index.ts",
+    "start:dev": "tsnd index.ts",
+    "build": "tsc",
+    "test": "vitest --globals"
   },
   "author": "Dominik Drozd",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^6.4.0",
-    "mysql2": "^2.3.3"
+    "helmet": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.2.0",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.35",
+    "@types/passport-jwt": "^3.0.6",
     "@types/uuid": "^8.3.4",
-    "ts-node": "^10.8.0",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.6.4"
+    "prettier": "^2.7.1",
+    "ts-node": "^10.8.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4",
+    "vitest": "^0.18.0"
   }
 }
