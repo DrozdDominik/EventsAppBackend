@@ -15,3 +15,7 @@ export interface NewUserEntity {
   currentTokenId?: string | null;
   role?: UserRole;
 }
+
+export type UserId = {
+  id: string;
+}
