@@ -13,7 +13,7 @@ import { apiLimiter, userLimiter } from './utils/limiter';
 
 const app = express();
 
-app.use(cors({ origin: config.corsOrigin }));
+app.use(cors({ credentials: true, origin: config.corsOrigin }));
 app.use(helmet());
 app.use('/api', apiLimiter);
 app.use('/user', userLimiter);

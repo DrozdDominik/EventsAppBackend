@@ -38,7 +38,7 @@ export const removeToken = async (user: UserRecord, res: Response): Promise<Resp
 
   return res
     .clearCookie('jwt', {
-      secure: false,
+      secure: true,
       domain: 'localhost',
       httpOnly: true,
     })
