@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { NewUserEntity, SimplyUserEntity, UserRole } from '../types';
+import { NewUserEntity, SimplyUserEntity, UserId, UserRole } from '../types';
 import { hashPassword, isEmailValid, isPasswordValid } from '../utils/auxiliaryMethods';
 import { AppError } from '../utils/error';
 import { pool } from '../utils/db';
@@ -8,6 +8,7 @@ import { ResultSetHeader } from 'mysql2';
 
 type UserRecordResults = [NewUserEntity[], FieldPacket[]];
 type SimplyUserRecordResult = [SimplyUserEntity[], FieldPacket[]];
+type UserIdRecordResults = [UserId[], FieldPacket[]];
 
 export class UserRecord {
 
@@ -213,5 +214,16 @@ export class UserRecord {
         role,
       };
     });
+  }
+
+  public static async isEmailAvailable(email: string): Promise<boolean> {
+    const [result] = (await pool.execute(
+      'SELECT `id` FROM `users` WHERE `email` = :email;',
+      {
+        email,
+      }
+    )) as UserIdRecordResults;
+
+    return result.length === 0;
   }
 }
