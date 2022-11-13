@@ -39,6 +39,8 @@ export const getEvent = async (req: Request, res: Response) => {
     throw new AppError('There is no event with the given id', 404);
   }
 
+  delete event.validationErrors
+
   res.json(event);
 };
 
