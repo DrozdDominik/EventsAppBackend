@@ -21,13 +21,10 @@ export interface NewEventEntity extends Omit<EventEntity, 'id' | 'isChosen' | 'l
 
 export type NewEventEntityProperties = keyof NewEventEntity;
 
-export interface MainEventEntityResult {
+export interface MainEventData {
   id: string;
   name: string;
   description: string;
-  is_chosen: boolean;
-  estimated_time: number;
-  user_id: string;
+  lat: number;
+  lon: number;
 }
-
-export type MainEventData = Omit<EventEntity, 'link' | 'lat' | 'lon'>
