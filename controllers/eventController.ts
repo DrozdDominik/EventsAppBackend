@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { EventRecord } from '../records/event.record';
-import { NewEventEntity } from '../types';
+import { NewEventData, NewEventEntity } from '../types';
 import { AppError } from '../utils/error';
 import { EventUpdate } from '../types/event/event-update';
 import { validate } from 'uuid';
@@ -13,9 +13,10 @@ export const getAllEvents = async (req: Request, res: Response) => {
 
 export const addEvent = async (req: Request, res: Response) => {
   const userId = (req.user as UserRecord).userId;
+  const requestData = req.body as NewEventData;
 
   const obj: NewEventEntity = {
-    ...req.body,
+    ...requestData,
     userId,
   };
 
