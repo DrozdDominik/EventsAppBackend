@@ -5,9 +5,13 @@ import { createToken, generateToken, removeToken } from '../auth/token';
 import { NewUserEntity, UserRole } from '../types';
 
 export const register = async (req: Request, res: Response) => {
+  const providedData = req.body as NewUserEntity;
+  if(!await UserRecord.isEmailAvailable(providedData.email)) {
+    throw new AppError('Email unavailable', 400);
+  }
   const user = new UserRecord(req.body as NewUserEntity);
   await user.insert();
-  res.status(201).json(user);
+  res.status(201).end();
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -22,11 +26,11 @@ export const login = async (req: Request, res: Response) => {
 
   return res
     .cookie('jwt', token.accessToken, {
-      secure: false,
+      secure: true,
       domain: 'localhost',
       httpOnly: true,
     })
-    .json({ ok: true });
+    .json({ role: user.userRole });
 };
 
 export const logout = async (req: Request, res: Response) => {
@@ -38,6 +42,9 @@ export const logout = async (req: Request, res: Response) => {
 export const changeEmail = async (req: Request, res: Response) => {
   const email: string = req.body.email;
 
+  if(!await UserRecord.isEmailAvailable(email)) {
+    throw new AppError('Email unavailable', 400);
+  }
   const user = req.user as UserRecord;
 
   user.userEmail = email;
@@ -95,3 +102,9 @@ export const changeRole = async (req: Request, res: Response) => {
 
   res.json({ ok: true });
 };
+
+export const getRole = (req: Request, res : Response) => {
+  const user = req.user as UserRecord;
+
+  res.json({role: user.userRole})
+}

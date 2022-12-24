@@ -6,6 +6,7 @@ import {
   changePassword,
   changeRole,
   getAllUsers,
+  getRole,
   login,
   logout,
   register,
@@ -27,4 +28,4 @@ userRouter.route('/pass').post(auth, changePassword).all(methodNotAllowed);
 
 userRouter.route('/name').post(auth, changeName).all(methodNotAllowed);
 
-userRouter.route('/role').post(auth, restrictTo(UserRole.Admin), changeRole).all(methodNotAllowed);
+userRouter.route('/role').get(auth, getRole).post(auth, restrictTo(UserRole.Admin), changeRole).all(methodNotAllowed);

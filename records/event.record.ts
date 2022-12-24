@@ -2,7 +2,6 @@ import { FieldPacket, ResultSetHeader } from 'mysql2/promise';
 import { v4 as uuid, validate } from 'uuid';
 import {
   MainEventData,
-  MainEventEntityResult,
   NewEventEntity,
   NewEventEntityProperties,
   SimpleEventEntity,
@@ -13,7 +12,7 @@ import { UpdateProperty } from '../types/event/event-update';
 import { convertCamelCaseToSnakeCase, convertSnakeCaseToCamelCase } from '../utils/auxiliaryMethods';
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
-type MainEventRecordResults = [MainEventEntityResult[], FieldPacket[]];
+type MainEventRecordResults = [MainEventData[], FieldPacket[]];
 type SimpleEventRecordResults = [SimpleEventEntity[], FieldPacket[]];
 
 export class EventRecord {
@@ -226,21 +225,10 @@ export class EventRecord {
 
   public static async getAll(): Promise<MainEventData[]> {
     const [results] = (await pool.execute(
-      'SELECT `id`, `name`, `description`, `is_chosen`, `estimated_time`, `user_id` FROM `events`;',
+      'SELECT `id`, `name`, `description`, `lat`, `lon` FROM `events`;',
     )) as MainEventRecordResults;
 
-    return results.map((result) => {
-      const { id, name, description, is_chosen, estimated_time, user_id } = result;
-
-      return {
-        id,
-        name,
-        description,
-        isChosen: is_chosen,
-        estimatedTime: estimated_time,
-        userId: user_id,
-      };
-    });
+    return results;
   }
 
   public static async findAll(name: string): Promise<SimpleEventEntity[]> {
