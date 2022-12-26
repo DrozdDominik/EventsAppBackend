@@ -9,7 +9,11 @@ import {
 import { pool } from '../utils/db';
 import { AppError } from '../utils/error';
 import { UpdateProperty } from '../types/event/event-update';
-import { convertCamelCaseToSnakeCase, convertSnakeCaseToCamelCase } from '../utils/auxiliaryMethods';
+import {
+  convertCamelCaseToSnakeCase,
+  convertSnakeCaseToCamelCase,
+  isLinkValid,
+} from '../utils/auxiliaryMethods';
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
 type MainEventRecordResults = [MainEventData[], FieldPacket[]];
@@ -30,7 +34,6 @@ export class EventRecord {
   constructor(obj: NewEventEntity) {
     this.id = obj.id ?? uuid();
     this.isChosen = obj.isChosen ?? false;
-    this.link = obj.link ?? null;
 
     if (!obj.name || obj.name.length < 3 || obj.name.length > 50) {
       this.validationErrors.push(
@@ -64,6 +67,14 @@ export class EventRecord {
       this.validationErrors.push(
         'Invalid userId.',
       );
+    }
+
+    if(obj.link === null) {
+      this.link = null
+    } else if (isLinkValid(obj.link)) {
+        this.link = obj.link
+    } else if(!isLinkValid(obj.link)) {
+        this.validationErrors.push('Invalid link.')
     }
 
     if (this.validationErrors.length > 0) {
@@ -137,10 +148,12 @@ export class EventRecord {
   }
 
   set eventLink(link: string) {
-    if (link === '') {
-      this.link = null;
-    } else {
-      this.link = link;
+    if(link === '') {
+      this.link = null
+    } else if (isLinkValid(link)) {
+      this.link = link
+    } else if(!isLinkValid(link)) {
+      this.validationErrors.push('Invalid link.')
     }
   }
 
