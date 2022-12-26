@@ -29,3 +29,13 @@ export const hashPassword = (password: string): string => {
   hmac.update(password);
   return hmac.digest('hex');
 };
+
+export const isLinkValid = (link: string): boolean => {
+  let url;
+  try {
+    url = new URL(link);
+  } catch (_) {
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
