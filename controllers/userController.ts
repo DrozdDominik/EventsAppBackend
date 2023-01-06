@@ -108,3 +108,9 @@ export const getRole = (req: Request, res : Response) => {
 
   res.json({role: user.userRole})
 }
+
+export const userName = (req: Request, res:Response) => {
+  const user = req.user as UserRecord;
+
+  res.json({name: user.userName})
+}
