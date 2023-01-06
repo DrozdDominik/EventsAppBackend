@@ -9,4 +9,3 @@ export interface EventUpdate {
 }
 
 export type UpdateProperty = keyof EventUpdate;
-

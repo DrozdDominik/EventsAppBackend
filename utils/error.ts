@@ -45,7 +45,7 @@ export const handleError = (
 
   err.isOperational
     ? res.status(err.statusCode).json({
-      message: err.message,
-    })
+        message: err.message,
+      })
     : res.status(500).json({ message: 'Sorry, try again later.' });
 };

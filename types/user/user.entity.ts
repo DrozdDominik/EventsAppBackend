@@ -18,4 +18,4 @@ export interface NewUserEntity {
 
 export type UserId = {
   id: string;
-}
+};

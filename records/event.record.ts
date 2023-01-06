@@ -58,23 +58,19 @@ export class EventRecord {
     }
 
     if (typeof obj.lat !== 'number' || typeof obj.lon !== 'number') {
-      this.validationErrors.push(
-        'Coordinates must be numbers.',
-      );
+      this.validationErrors.push('Coordinates must be numbers.');
     }
 
     if (!obj.userId || !validate(obj.userId)) {
-      this.validationErrors.push(
-        'Invalid userId.',
-      );
+      this.validationErrors.push('Invalid userId.');
     }
 
-    if(obj.link === null) {
-      this.link = null
+    if (obj.link === null) {
+      this.link = null;
     } else if (isLinkValid(obj.link)) {
-        this.link = obj.link
-    } else if(!isLinkValid(obj.link)) {
-        this.validationErrors.push('Invalid link.')
+      this.link = obj.link;
+    } else if (!isLinkValid(obj.link)) {
+      this.validationErrors.push('Invalid link.');
     }
 
     if (this.validationErrors.length > 0) {
@@ -148,12 +144,12 @@ export class EventRecord {
   }
 
   set eventLink(link: string) {
-    if(link === '') {
-      this.link = null
+    if (link === '') {
+      this.link = null;
     } else if (isLinkValid(link)) {
-      this.link = link
-    } else if(!isLinkValid(link)) {
-      this.validationErrors.push('Invalid link.')
+      this.link = link;
+    } else if (!isLinkValid(link)) {
+      this.validationErrors.push('Invalid link.');
     }
   }
 
@@ -163,9 +159,7 @@ export class EventRecord {
 
   set eventLat(lat: number) {
     if (typeof lat !== 'number') {
-      this.validationErrors.push(
-        'Coordinates must be numbers.',
-      );
+      this.validationErrors.push('Coordinates must be numbers.');
     }
     this.lat = lat;
   }
@@ -176,9 +170,7 @@ export class EventRecord {
 
   set eventLon(lon: number) {
     if (typeof lon !== 'number') {
-      this.validationErrors.push(
-        'Coordinates must be numbers.',
-      );
+      this.validationErrors.push('Coordinates must be numbers.');
     }
     this.lon = lon;
   }
@@ -246,16 +238,20 @@ export class EventRecord {
 
   public static async findAll(name: string): Promise<SimpleEventEntity[]> {
     const [results] = (await pool.execute(
-      'SELECT `id`, `name`, `lat`, `lon` FROM `events` WHERE `name` LIKE :search;', {
+      'SELECT `id`, `name`, `lat`, `lon` FROM `events` WHERE `name` LIKE :search;',
+      {
         search: `%${name}%`,
       },
     )) as SimpleEventRecordResults;
 
-    return results.map((result) => {
+    return results.map(result => {
       const { id, name, lat, lon } = result;
 
       return {
-        id, name, lat, lon,
+        id,
+        name,
+        lat,
+        lon,
       };
     });
   }
@@ -278,7 +274,10 @@ export class EventRecord {
 
     let sql = 'UPDATE `events` SET';
 
-    columnsToUpdate.forEach(column => sql += ` ${convertCamelCaseToSnakeCase(column)} = :${column},`);
+    columnsToUpdate.forEach(
+      column =>
+        (sql += ` ${convertCamelCaseToSnakeCase(column)} = :${column},`),
+    );
 
     sql = sql.substring(0, sql.length - 1);
 

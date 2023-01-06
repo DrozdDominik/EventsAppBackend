@@ -2,7 +2,6 @@ import { it, expect } from 'vitest';
 import { NewUserEntity } from '../types';
 import { UserRecord } from '../records/user.record';
 
-
 const defaultObj: NewUserEntity = {
   name: 'Tester',
   email: 'test@example.com',

@@ -25,4 +25,3 @@ it('should build EventRecord', () => {
   expect(event.eventLon).toBe(defaultObj.lon);
   expect(event.eventUserId).toBe(defaultObj.userId);
 });
-

@@ -6,7 +6,7 @@ import { NewUserEntity, UserRole } from '../types';
 
 export const register = async (req: Request, res: Response) => {
   const providedData = req.body as NewUserEntity;
-  if(!await UserRecord.isEmailAvailable(providedData.email)) {
+  if (!(await UserRecord.isEmailAvailable(providedData.email))) {
     throw new AppError('Email unavailable', 400);
   }
   const user = new UserRecord(req.body as NewUserEntity);
@@ -17,7 +17,10 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const user: UserRecord | null = await UserRecord.findOneByCredentials(email, password);
+  const user: UserRecord | null = await UserRecord.findOneByCredentials(
+    email,
+    password,
+  );
 
   if (!user) {
     throw new AppError('Invalid credentials.', 401);
@@ -42,14 +45,14 @@ export const logout = async (req: Request, res: Response) => {
 export const changeEmail = async (req: Request, res: Response) => {
   const email: string = req.body.email;
 
-  if(!await UserRecord.isEmailAvailable(email)) {
+  if (!(await UserRecord.isEmailAvailable(email))) {
     throw new AppError('Email unavailable', 400);
   }
   const user = req.user as UserRecord;
 
   user.userEmail = email;
 
-  if (!await user.updateUserEmail()) {
+  if (!(await user.updateUserEmail())) {
     throw new AppError('Sorry update operation failed.', 500);
   }
 
@@ -63,7 +66,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
   user.userPassword = password;
 
-  if (!await user.updateUserPassword()) {
+  if (!(await user.updateUserPassword())) {
     throw new AppError('Sorry update operation failed.', 500);
   }
 
@@ -96,21 +99,21 @@ export const changeRole = async (req: Request, res: Response) => {
   const id: string = req.body.id;
   const role: UserRole = req.body.role;
 
-  if (!await UserRecord.updateUserRole(id, role)) {
+  if (!(await UserRecord.updateUserRole(id, role))) {
     throw new AppError('Sorry update operation failed.', 500);
   }
 
   res.json({ ok: true });
 };
 
-export const getRole = (req: Request, res : Response) => {
+export const getRole = (req: Request, res: Response) => {
   const user = req.user as UserRecord;
 
-  res.json({role: user.userRole})
-}
+  res.json({ role: user.userRole });
+};
 
-export const userName = (req: Request, res:Response) => {
+export const userName = (req: Request, res: Response) => {
   const user = req.user as UserRecord;
 
-  res.json({name: user.userName})
-}
+  res.json({ name: user.userName });
+};

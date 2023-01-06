@@ -25,8 +25,8 @@ const objToTests: NewEventEntity = {
 };
 
 afterAll(async () => {
-  await pool.execute('DELETE FROM `events` WHERE `name` LIKE \'Test%\'');
-  await pool.execute('DELETE FROM `events` WHERE `name` = \'Updated event\';');
+  await pool.execute("DELETE FROM `events` WHERE `name` LIKE 'Test%'");
+  await pool.execute("DELETE FROM `events` WHERE `name` = 'Updated event';");
   await pool.end();
 });
 
@@ -40,7 +40,7 @@ describe('EventRecord.getOne()', () => {
 });
 
 describe('EventRecord.insert()', () => {
-   it('should returns new UUID.', async () => {
+  it('should returns new UUID.', async () => {
     const event = new EventRecord(defaultObj);
     const id = await event.insert();
 
@@ -53,7 +53,9 @@ describe('EventRecord.getAll()', () => {
   it('should returns array of all entries.', async () => {
     const events = await EventRecord.getAll();
 
-    const [results] = (await pool.execute('SELECT COUNT(`id`) AS `count` FROM `events`;')) as [[{ 'count': number }], FieldPacket[]];
+    const [results] = (await pool.execute(
+      'SELECT COUNT(`id`) AS `count` FROM `events`;',
+    )) as [[{ count: number }], FieldPacket[]];
 
     const numberOfEvents = results[0].count;
 
@@ -70,7 +72,6 @@ describe('EventRecord.getAll()', () => {
     expect(events[0]).not.property('lon');
   });
 });
-
 
 describe('EventRecord.findAll()', () => {
   it('should returns array of found entries.', async () => {
@@ -125,11 +126,16 @@ describe('EventRecord.update()', () => {
     event.eventEstimatedTime = 88;
     event.eventLink = 'https://example.link';
 
-    const updatedColumns = ['name', 'description', 'isChosen', 'estimatedTime', 'link'];
+    const updatedColumns = [
+      'name',
+      'description',
+      'isChosen',
+      'estimatedTime',
+      'link',
+    ];
 
     const result = await event.update(updatedColumns);
 
     expect(result).toBe(true);
   });
 });
-

@@ -6,14 +6,16 @@ import { AppError } from '../utils/error';
 
 const secret = config.JWT_SECRET;
 
-const cookieExtractor = (req: any): null | string => (req && req.cookies) ? (req.cookies?.jwt ?? null) : null;
+const cookieExtractor = (req: any): null | string =>
+  req && req.cookies ? req.cookies?.jwt ?? null : null;
 
 const jwtOpts = {
   jwtFromRequest: cookieExtractor,
   secretOrKey: secret,
 };
 
-passport.use(new Strategy(jwtOpts, async (payload, done) => {
+passport.use(
+  new Strategy(jwtOpts, async (payload, done) => {
     if (!payload || !payload.id) {
       return done(new AppError('Unauthorized', 401), false);
     }
@@ -24,6 +26,5 @@ passport.use(new Strategy(jwtOpts, async (payload, done) => {
       return done(new AppError('Unauthorized', 401), false);
     }
     done(null, user);
-  },
-));
-
+  }),
+);
