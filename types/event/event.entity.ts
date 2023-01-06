@@ -13,7 +13,8 @@ export interface EventEntity extends SimpleEventEntity {
   userId: string;
 }
 
-export interface NewEventEntity extends Omit<EventEntity, 'id' | 'isChosen' | 'link'> {
+export interface NewEventEntity
+  extends Omit<EventEntity, 'id' | 'isChosen' | 'link'> {
   id?: string;
   isChosen?: boolean;
   link?: string | null;

@@ -1,6 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { NewUserEntity, SimplyUserEntity, UserId, UserRole } from '../types';
-import { hashPassword, isEmailValid, isPasswordValid } from '../utils/auxiliaryMethods';
+import {
+  hashPassword,
+  isEmailValid,
+  isPasswordValid,
+} from '../utils/auxiliaryMethods';
 import { AppError } from '../utils/error';
 import { pool } from '../utils/db';
 import { FieldPacket } from 'mysql2/promise';
@@ -11,7 +15,6 @@ type SimplyUserRecordResult = [SimplyUserEntity[], FieldPacket[]];
 type UserIdRecordResults = [UserId[], FieldPacket[]];
 
 export class UserRecord {
-
   private readonly id: string;
   private name: string;
   private email: string;
@@ -32,9 +35,7 @@ export class UserRecord {
     }
 
     if (!isEmailValid(obj.email)) {
-      this.validationErrors.push(
-        'Provided email is not valid.',
-      );
+      this.validationErrors.push('Provided email is not valid.');
     }
 
     if (obj.password && !isPasswordValid(obj.password)) {
@@ -52,7 +53,6 @@ export class UserRecord {
     if (obj.password) {
       this.passwordHash = hashPassword(obj.password);
     }
-
   }
 
   get userId() {
@@ -115,8 +115,10 @@ export class UserRecord {
     return this.id;
   }
 
-  public static async findOneByCredentials(email: string, password: string): Promise<UserRecord> | null {
-
+  public static async findOneByCredentials(
+    email: string,
+    password: string,
+  ): Promise<UserRecord> | null {
     const [results] = (await pool.execute(
       'SELECT `id`, `name`, `email`, `current_token_id`, `role` FROM `users` WHERE `email` = :email AND `password_hash` = :passwordHash;',
       {
@@ -128,7 +130,9 @@ export class UserRecord {
     return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
-  public static async findOneByToken(token: string): Promise<UserRecord> | null {
+  public static async findOneByToken(
+    token: string,
+  ): Promise<UserRecord> | null {
     const [results] = (await pool.execute(
       'SELECT * FROM `users` WHERE `current_token_id` = :token;',
       {
@@ -141,70 +145,73 @@ export class UserRecord {
 
   public async updateUserTokenId(): Promise<boolean> {
     const [results] = (await pool.execute(
-        'UPDATE `users` SET `current_token_id` = :token WHERE `id` = :id;',
-        {
-          token: this.userCurrentTokenId,
-          id: this.id,
-        })
-    ) as [ResultSetHeader, FieldPacket[]];
+      'UPDATE `users` SET `current_token_id` = :token WHERE `id` = :id;',
+      {
+        token: this.userCurrentTokenId,
+        id: this.id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1;
   }
 
   public async updateUserEmail(): Promise<boolean> {
     const [results] = (await pool.execute(
-        'UPDATE `users` SET `email` = :email WHERE `id` = :id;',
-        {
-          email: this.email,
-          id: this.id,
-        })
-    ) as [ResultSetHeader, FieldPacket[]];
+      'UPDATE `users` SET `email` = :email WHERE `id` = :id;',
+      {
+        email: this.email,
+        id: this.id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1;
   }
 
   public async updateUserPassword(): Promise<boolean> {
     const [results] = (await pool.execute(
-        'UPDATE `users` SET `password_hash` = :passwordHash WHERE `id` = :id;',
-        {
-          passwordHash: this.email,
-          id: this.id,
-        })
-    ) as [ResultSetHeader, FieldPacket[]];
+      'UPDATE `users` SET `password_hash` = :passwordHash WHERE `id` = :id;',
+      {
+        passwordHash: this.email,
+        id: this.id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1;
   }
 
   public async updateUserName(): Promise<string | null> {
     const [results] = (await pool.execute(
-        'UPDATE `users` SET `name` = :name WHERE `id` = :id;',
-        {
-          name: this.name,
-          id: this.id,
-        })
-    ) as [ResultSetHeader, FieldPacket[]];
+      'UPDATE `users` SET `name` = :name WHERE `id` = :id;',
+      {
+        name: this.name,
+        id: this.id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1 ? this.name : null;
   }
 
-  public static async updateUserRole(id: string, role: UserRole): Promise<boolean> {
+  public static async updateUserRole(
+    id: string,
+    role: UserRole,
+  ): Promise<boolean> {
     const [results] = (await pool.execute(
-        'UPDATE `users` SET `role` = :role WHERE `id` = :id;',
-        {
-          role,
-          id,
-        })
-    ) as [ResultSetHeader, FieldPacket[]];
+      'UPDATE `users` SET `role` = :role WHERE `id` = :id;',
+      {
+        role,
+        id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
 
     return results.affectedRows === 1;
   }
 
   public static async getAll(): Promise<SimplyUserEntity[]> {
     const [results] = (await pool.execute(
-        'SELECT `id`, `name`, `email`, `role` FROM `users`;')
-    ) as SimplyUserRecordResult;
+      'SELECT `id`, `name`, `email`, `role` FROM `users`;',
+    )) as SimplyUserRecordResult;
 
-    return results.map((result) => {
+    return results.map(result => {
       const { id, name, email, role } = result;
 
       return {
@@ -221,7 +228,7 @@ export class UserRecord {
       'SELECT `id` FROM `users` WHERE `email` = :email;',
       {
         email,
-      }
+      },
     )) as UserIdRecordResults;
 
     return result.length === 0;
