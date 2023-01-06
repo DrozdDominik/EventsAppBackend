@@ -10,6 +10,7 @@ import {
   login,
   logout,
   register,
+  userName,
 } from '../controllers/userController';
 import { auth, restrictTo } from '../auth/auth';
 import { UserRole } from '../types';
@@ -26,6 +27,6 @@ userRouter.route('/email').post(auth, changeEmail).all(methodNotAllowed);
 
 userRouter.route('/pass').post(auth, changePassword).all(methodNotAllowed);
 
-userRouter.route('/name').post(auth, changeName).all(methodNotAllowed);
+userRouter.route('/name').get(auth, userName).post(auth, changeName).all(methodNotAllowed);
 
 userRouter.route('/role').get(auth, getRole).post(auth, restrictTo(UserRole.Admin), changeRole).all(methodNotAllowed);
