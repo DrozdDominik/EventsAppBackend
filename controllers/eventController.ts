@@ -24,7 +24,7 @@ export const addEvent = async (req: Request, res: Response) => {
 
   const eventId = await event.insert();
 
-  res.status(201).json({ id: eventId });
+  res.status(201).json(eventId);
 };
 
 export const getEvent = async (req: Request, res: Response) => {
