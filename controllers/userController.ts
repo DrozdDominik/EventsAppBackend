@@ -56,7 +56,7 @@ export const changeEmail = async (req: Request, res: Response) => {
     throw new AppError('Sorry update operation failed.', 500);
   }
 
-  await removeToken(user, res);
+  res.json(true);
 };
 
 export const changePassword = async (req: Request, res: Response) => {
@@ -70,7 +70,7 @@ export const changePassword = async (req: Request, res: Response) => {
     throw new AppError('Sorry update operation failed.', 500);
   }
 
-  await removeToken(user, res);
+  res.json(true);
 };
 
 export const changeName = async (req: Request, res: Response) => {
