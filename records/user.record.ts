@@ -171,7 +171,7 @@ export class UserRecord {
     const [results] = (await pool.execute(
       'UPDATE `users` SET `password_hash` = :passwordHash WHERE `id` = :id;',
       {
-        passwordHash: this.email,
+        passwordHash: this.passwordHash,
         id: this.id,
       },
     )) as [ResultSetHeader, FieldPacket[]];
