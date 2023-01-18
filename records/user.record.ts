@@ -13,6 +13,7 @@ import { ResultSetHeader } from 'mysql2';
 type UserRecordResults = [NewUserEntity[], FieldPacket[]];
 type SimplyUserRecordResult = [SimplyUserEntity[], FieldPacket[]];
 type UserIdRecordResults = [UserId[], FieldPacket[]];
+type UserRequestRecordResults = [{ request: boolean }[], FieldPacket[]];
 
 export class UserRecord {
   private readonly id: string;
@@ -232,5 +233,27 @@ export class UserRecord {
     )) as UserIdRecordResults;
 
     return result.length === 0;
+  }
+
+  public static async requestRoleUpgrade(id: string): Promise<boolean> {
+    const [results] = (await pool.execute(
+      'UPDATE `users` SET `request` = TRUE WHERE `id` = :id;',
+      {
+        id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1;
+  }
+
+  public static async getRequestStatus(id: string): Promise<boolean> {
+    const [results] = (await pool.execute(
+      'SELECT `request` FROM `users` WHERE `id` = :id;',
+      {
+        id,
+      },
+    )) as UserRequestRecordResults;
+
+    return results[0].request;
   }
 }

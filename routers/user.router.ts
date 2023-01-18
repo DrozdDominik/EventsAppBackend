@@ -6,9 +6,11 @@ import {
   changePassword,
   changeRole,
   getAllUsers,
+  getPermissionsRequestStatus,
   getRole,
   login,
   logout,
+  permissionsRequest,
   register,
   userName,
 } from '../controllers/userController';
@@ -41,4 +43,10 @@ userRouter
   .route('/role')
   .get(auth, getRole)
   .post(auth, restrictTo(UserRole.Admin), changeRole)
+  .all(methodNotAllowed);
+
+userRouter
+  .route('/permissions')
+  .get(auth, getPermissionsRequestStatus)
+  .patch(auth, permissionsRequest)
   .all(methodNotAllowed);

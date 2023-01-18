@@ -117,3 +117,32 @@ export const userName = (req: Request, res: Response) => {
 
   res.json({ name: user.userName });
 };
+
+export const permissionsRequest = async (req: Request, res: Response) => {
+  const user = req.user as UserRecord;
+
+  if (user.userRole !== UserRole.User) {
+    throw new AppError('Cannot change permissions', 400);
+  }
+
+  if (!(await UserRecord.requestRoleUpgrade(user.userId))) {
+    throw new AppError('Sorry operation failed.', 500);
+  }
+
+  res.json(true);
+};
+
+export const getPermissionsRequestStatus = async (
+  req: Request,
+  res: Response,
+) => {
+  const user = req.user as UserRecord;
+
+  if (user.userRole !== UserRole.User) {
+    throw new AppError('Operation not allowed for this user', 400);
+  }
+
+  const data = await UserRecord.getRequestStatus(user.userId);
+
+  res.json(data);
+};
