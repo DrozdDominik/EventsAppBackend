@@ -9,8 +9,8 @@ export const apiLimiter = rateLimit({
 });
 
 export const userLimiter = rateLimit({
-  max: 20,
-  windowMs: 60 * 60 * 1000,
+  max: 30,
+  windowMs: 10 * 60 * 1000,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
