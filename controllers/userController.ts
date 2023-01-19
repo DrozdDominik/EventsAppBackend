@@ -125,7 +125,7 @@ export const permissionsRequest = async (req: Request, res: Response) => {
     throw new AppError('Cannot change permissions', 400);
   }
 
-  if (!(await UserRecord.requestRoleUpgrade(user.userId))) {
+  if (!(await user.requestRoleUpgrade())) {
     throw new AppError('Sorry operation failed.', 500);
   }
 

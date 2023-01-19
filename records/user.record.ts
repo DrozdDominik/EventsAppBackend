@@ -235,11 +235,11 @@ export class UserRecord {
     return result.length === 0;
   }
 
-  public static async requestRoleUpgrade(id: string): Promise<boolean> {
+  public async requestRoleUpgrade(): Promise<boolean> {
     const [results] = (await pool.execute(
       'UPDATE `users` SET `request` = TRUE WHERE `id` = :id;',
       {
-        id,
+        id: this.id,
       },
     )) as [ResultSetHeader, FieldPacket[]];
 
