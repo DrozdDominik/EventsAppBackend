@@ -110,6 +110,7 @@ export class UserRecord {
         password_hash: this.passwordHash,
         current_token_id: this.userCurrentTokenId,
         role: this.role,
+        request: false,
       },
     );
 
