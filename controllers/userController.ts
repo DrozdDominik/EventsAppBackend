@@ -146,3 +146,24 @@ export const getPermissionsRequestStatus = async (
 
   res.json(data);
 };
+
+export const selfUserAccountDelete = async (req: Request, res: Response) => {
+  const user = req.user as UserRecord;
+
+  const data = await user.selfUserDelete();
+
+  res.json(data);
+};
+
+export const userAccountDeleteByAdmin = async (req: Request, res: Response) => {
+  const user = req.user as UserRecord;
+  const idUserToDelete = req.body.id;
+
+  if (user.userRole !== UserRole.Admin) {
+    throw new AppError('Operation not allowed for this user', 400);
+  }
+
+  const data = await UserRecord.deleteUserByOther(idUserToDelete);
+
+  res.json(data);
+};

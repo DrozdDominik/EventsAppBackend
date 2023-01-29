@@ -102,7 +102,7 @@ export class UserRecord {
 
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `users` VALUES (:id, :name, :email, :password_hash, :current_token_id, :role);',
+      'INSERT INTO `users` VALUES (:id, :name, :email, :password_hash, :current_token_id, :role, :request);',
       {
         id: this.id,
         name: this.name,
@@ -255,5 +255,27 @@ export class UserRecord {
     )) as UserRequestRecordResults;
 
     return results[0].request;
+  }
+
+  public async selfUserDelete(): Promise<boolean> {
+    const [results] = (await pool.execute(
+      'DELETE FROM `users` WHERE `id` = :id;',
+      {
+        id: this.id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1;
+  }
+
+  public static async deleteUserByOther(id: string): Promise<boolean> {
+    const [results] = (await pool.execute(
+      'DELETE FROM `users` WHERE `id` = :id;',
+      {
+        id,
+      },
+    )) as [ResultSetHeader, FieldPacket[]];
+
+    return results.affectedRows === 1;
   }
 }
