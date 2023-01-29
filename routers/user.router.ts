@@ -12,6 +12,8 @@ import {
   logout,
   permissionsRequest,
   register,
+  selfUserAccountDelete,
+  userAccountDeleteByAdmin,
   userName,
 } from '../controllers/userController';
 import { auth, restrictTo } from '../auth/auth';
@@ -49,4 +51,14 @@ userRouter
   .route('/permissions')
   .get(auth, getPermissionsRequestStatus)
   .patch(auth, permissionsRequest)
+  .all(methodNotAllowed);
+
+userRouter
+  .route('/delete')
+  .delete(auth, selfUserAccountDelete)
+  .all(methodNotAllowed);
+
+userRouter
+  .route('/admin/user')
+  .delete(auth, restrictTo(UserRole.Admin), userAccountDeleteByAdmin)
   .all(methodNotAllowed);
