@@ -42,7 +42,7 @@ export const getEvent = async (req: Request, res: Response) => {
 
   delete event.validationErrors;
 
-  res.json(event);
+  res.json({ event });
 };
 
 export const deleteEvent = async (req: Request, res: Response) => {
