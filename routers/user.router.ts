@@ -31,14 +31,14 @@ userRouter.route('/login').post(login).all(methodNotAllowed);
 
 userRouter.route('/logout').get(auth, logout).all(methodNotAllowed);
 
-userRouter.route('/email').post(auth, changeEmail).all(methodNotAllowed);
+userRouter.route('/email').patch(auth, changeEmail).all(methodNotAllowed);
 
-userRouter.route('/pass').post(auth, changePassword).all(methodNotAllowed);
+userRouter.route('/pass').patch(auth, changePassword).all(methodNotAllowed);
 
 userRouter
   .route('/name')
   .get(auth, userName)
-  .post(auth, changeName)
+  .patch(auth, changeName)
   .all(methodNotAllowed);
 
 userRouter
