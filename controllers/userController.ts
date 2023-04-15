@@ -142,7 +142,7 @@ export const getPermissionsRequestStatus = async (
     throw new AppError('Operation not allowed for this user', 400);
   }
 
-  const data = await UserRecord.getRequestStatus(user.userId);
+  const data = Boolean(await UserRecord.getRequestStatus(user.userId));
 
   res.json(data);
 };
