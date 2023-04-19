@@ -84,14 +84,14 @@ export class UserRecord {
 
   set userEmail(email: string) {
     if (!isEmailValid(email)) {
-      throw new AppError('Provided email is not valid.', 400);
+      throw new AppError('Provided email is not valid.', 422);
     }
     this.email = email;
   }
 
   set userPassword(password: string) {
     if (!isPasswordValid(password)) {
-      throw new AppError('Provided password is not valid.', 400);
+      throw new AppError('Provided password is not valid.', 422);
     }
     this.passwordHash = hashPassword(password);
   }

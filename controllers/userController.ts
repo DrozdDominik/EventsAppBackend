@@ -152,7 +152,15 @@ export const selfUserAccountDelete = async (req: Request, res: Response) => {
 
   const data = await user.selfUserDelete();
 
-  res.json(data);
+  data
+    ? res
+        .clearCookie('jwt', {
+          secure: true,
+          domain: 'localhost',
+          httpOnly: true,
+        })
+        .json(data)
+    : res.json(data);
 };
 
 export const userAccountDeleteByAdmin = async (req: Request, res: Response) => {
