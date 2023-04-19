@@ -44,7 +44,7 @@ userRouter
 userRouter
   .route('/role')
   .get(auth, getRole)
-  .post(auth, restrictTo(UserRole.Admin), changeRole)
+  .patch(auth, restrictTo(UserRole.Admin), changeRole)
   .all(methodNotAllowed);
 
 userRouter
