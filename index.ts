@@ -20,9 +20,9 @@ app.use('/user', userLimiter);
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use('/api/event', eventRouter);
 app.use('/user', userRouter);
+app.use('api/category', categoryRouter);
 
 app.use(handleNotFound);
 

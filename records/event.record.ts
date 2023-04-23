@@ -29,6 +29,7 @@ export class EventRecord {
   private lat: number;
   private lon: number;
   private userId: string;
+  private categoryId: string;
   public validationErrors: string[] = [];
 
   constructor(obj: NewEventEntity) {
@@ -65,6 +66,10 @@ export class EventRecord {
       this.validationErrors.push('Invalid userId.');
     }
 
+    if (!obj.categoryId || !validate(obj.categoryId)) {
+      this.validationErrors.push('Invalid categoryId.');
+    }
+
     if (obj.link === null) {
       this.link = null;
     } else if (isLinkValid(obj.link)) {
@@ -83,6 +88,7 @@ export class EventRecord {
     this.lat = obj.lat;
     this.lon = obj.lon;
     this.userId = obj.userId;
+    this.categoryId = obj.categoryId;
   }
 
   get eventId() {
@@ -186,6 +192,17 @@ export class EventRecord {
     this.userId = userId;
   }
 
+  get eventCategoryId() {
+    return this.categoryId;
+  }
+
+  set eventCategoryId(categoryId: string) {
+    if (!validate(categoryId)) {
+      throw new AppError('Invalid categoryId', 400);
+    }
+    this.userId = categoryId;
+  }
+
   public async insert(): Promise<string> {
     await pool.execute(
       'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id);',
@@ -199,6 +216,7 @@ export class EventRecord {
         lat: this.lat,
         lon: this.lon,
         user_id: this.userId,
+        category_id: this.categoryId,
       },
     );
 

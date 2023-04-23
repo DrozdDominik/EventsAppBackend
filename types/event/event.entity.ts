@@ -11,6 +11,7 @@ export interface EventEntity extends SimpleEventEntity {
   estimatedTime: number;
   link: string | null;
   userId: string;
+  categoryId: string;
 }
 
 export interface NewEventEntity
