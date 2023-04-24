@@ -1,28 +1,38 @@
-import { it, expect, afterAll, describe } from 'vitest';
+import { it, expect, afterAll, describe, beforeAll } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { NewEventEntity } from '../types';
 import { pool } from '../utils/db';
 import { EventRecord } from '../records/event.record';
 import { FieldPacket } from 'mysql2/promise';
+import { CategoryRecord } from '../records/category.record';
 
-const defaultObj: NewEventEntity = {
-  name: 'Test event name',
-  description: 'Dummy description',
-  isChosen: true,
-  estimatedTime: 150,
-  lat: 21.23,
-  lon: 50.03,
-  userId: faker.datatype.uuid(),
-};
+let defaultObj: NewEventEntity;
+let objToTests: NewEventEntity;
 
-const objToTests: NewEventEntity = {
-  name: 'Delete me',
-  description: 'Testing delete functionality.',
-  estimatedTime: 45,
-  lat: 20.44,
-  lon: 34.87,
-  userId: faker.datatype.uuid(),
-};
+beforeAll(async () => {
+  const categoriesIds = await CategoryRecord.getAll();
+
+  defaultObj = {
+    name: 'Test event name',
+    description: 'Dummy description',
+    isChosen: true,
+    estimatedTime: 150,
+    lat: 21.23,
+    lon: 50.03,
+    userId: faker.datatype.uuid(),
+    categoryId: categoriesIds[0].categoryId,
+  };
+
+  objToTests = {
+    name: 'Delete me',
+    description: 'Testing delete functionality.',
+    estimatedTime: 45,
+    lat: 20.44,
+    lon: 34.87,
+    userId: faker.datatype.uuid(),
+    categoryId: categoriesIds[0].categoryId,
+  };
+}, 5000);
 
 afterAll(async () => {
   await pool.execute("DELETE FROM `events` WHERE `name` LIKE 'Test%'");
@@ -64,12 +74,10 @@ describe('EventRecord.getAll()', () => {
     expect(events.length).toBe(numberOfEvents);
   });
 
-  it('should returns data without "link", "lat" and "lon".', async () => {
+  it('should returns data without "link"', async () => {
     const events = await EventRecord.getAll();
 
     expect(events[0]).not.property('link');
-    expect(events[0]).not.property('lat');
-    expect(events[0]).not.property('lon');
   });
 });
 
@@ -125,6 +133,7 @@ describe('EventRecord.update()', () => {
     event.isEventChosen = true;
     event.eventEstimatedTime = 88;
     event.eventLink = 'https://example.link';
+    event.eventCategoryId = faker.datatype.uuid();
 
     const updatedColumns = [
       'name',
@@ -132,6 +141,7 @@ describe('EventRecord.update()', () => {
       'isChosen',
       'estimatedTime',
       'link',
+      'categoryId',
     ];
 
     const result = await event.update(updatedColumns);

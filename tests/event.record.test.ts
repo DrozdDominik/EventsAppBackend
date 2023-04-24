@@ -10,6 +10,7 @@ const defaultObj: NewEventEntity = {
   lat: 20,
   lon: 50,
   userId: faker.datatype.uuid(),
+  categoryId: faker.datatype.uuid(),
 };
 
 it('should build EventRecord', () => {
@@ -24,4 +25,5 @@ it('should build EventRecord', () => {
   expect(event.eventLat).toBe(defaultObj.lat);
   expect(event.eventLon).toBe(defaultObj.lon);
   expect(event.eventUserId).toBe(defaultObj.userId);
+  expect(event.eventCategoryId).toBe(defaultObj.categoryId);
 });
