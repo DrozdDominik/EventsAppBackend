@@ -70,7 +70,7 @@ export class EventRecord {
       this.validationErrors.push('Invalid categoryId.');
     }
 
-    if (obj.link === null) {
+    if (!obj.link) {
       this.link = null;
     } else if (isLinkValid(obj.link)) {
       this.link = obj.link;
@@ -205,7 +205,7 @@ export class EventRecord {
 
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id);',
+      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id, :category_id);',
       {
         id: this.id,
         name: this.name,
