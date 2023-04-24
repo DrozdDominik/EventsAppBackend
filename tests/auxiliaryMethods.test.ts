@@ -3,6 +3,7 @@ import {
   convertCamelCaseToSnakeCase,
   convertSnakeCaseToCamelCase,
   isEmailValid,
+  isLinkValid,
   isPasswordValid,
 } from '../utils/auxiliaryMethods';
 
@@ -89,6 +90,24 @@ describe('isPasswordValid()', () => {
     const validEmail = 'asdf1uuah&hy';
 
     const result = isPasswordValid(validEmail);
+
+    expect(result).toBe(true);
+  });
+});
+
+describe('isLinkValid()', () => {
+  it('should returns false if provided not valid protocol', () => {
+    const notValidLink = 'htp://example.com';
+
+    const result = isLinkValid(notValidLink);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns true if provided valid link', () => {
+    const validLink = 'https://example.com';
+
+    const result = isLinkValid(validLink);
 
     expect(result).toBe(true);
   });
