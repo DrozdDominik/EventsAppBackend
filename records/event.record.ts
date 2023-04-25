@@ -200,7 +200,7 @@ export class EventRecord {
     if (!validate(categoryId)) {
       throw new AppError('Invalid categoryId', 400);
     }
-    this.userId = categoryId;
+    this.categoryId = categoryId;
   }
 
   public async insert(): Promise<string> {
