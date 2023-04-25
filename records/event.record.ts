@@ -262,16 +262,7 @@ export class EventRecord {
       },
     )) as SimpleEventRecordResults;
 
-    return results.map(result => {
-      const { id, name, lat, lon } = result;
-
-      return {
-        id,
-        name,
-        lat,
-        lon,
-      };
-    });
+    return results;
   }
 
   public async delete(): Promise<boolean> {
