@@ -101,6 +101,10 @@ export const updateEvent = async (req: Request, res: Response) => {
     event.eventLink = obj.link;
   }
 
+  if (obj.categoryId) {
+    event.eventCategoryId = obj.categoryId;
+  }
+
   if (!(await event.update(keys))) {
     throw new AppError('Sorry update operation failed.', 500);
   }

@@ -6,6 +6,7 @@ export interface EventUpdate {
   link?: string;
   lat?: number;
   lon?: number;
+  categoryId?: string;
 }
 
 export type UpdateProperty = keyof EventUpdate;
