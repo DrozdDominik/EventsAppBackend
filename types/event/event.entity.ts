@@ -29,6 +29,7 @@ export interface MainEventData {
   description: string;
   lat: number;
   lon: number;
+  category: string;
 }
 
 export type NewEventData = Omit<EventEntity, 'id' | 'isChosen' | 'userId'>;

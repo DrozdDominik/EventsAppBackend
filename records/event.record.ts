@@ -248,7 +248,7 @@ export class EventRecord {
 
   public static async getAll(): Promise<MainEventData[]> {
     const [results] = (await pool.execute(
-      'SELECT `id`, `name`, `description`, `lat`, `lon` FROM `events`;',
+      'SELECT e.id AS id, e.name AS name, e.description AS description, e.lat AS lat, e.lon AS lon, c.name AS category FROM `events` AS e INNER JOIN `categories` AS c ON e.category_id=c.id;',
     )) as MainEventRecordResults;
 
     return results;
