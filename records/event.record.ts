@@ -29,6 +29,7 @@ export class EventRecord {
   private lat: number;
   private lon: number;
   private userId: string;
+  private categoryId: string;
   public validationErrors: string[] = [];
 
   constructor(obj: NewEventEntity) {
@@ -65,7 +66,11 @@ export class EventRecord {
       this.validationErrors.push('Invalid userId.');
     }
 
-    if (obj.link === null) {
+    if (!obj.categoryId || !validate(obj.categoryId)) {
+      this.validationErrors.push('Invalid categoryId.');
+    }
+
+    if (!obj.link) {
       this.link = null;
     } else if (isLinkValid(obj.link)) {
       this.link = obj.link;
@@ -83,6 +88,7 @@ export class EventRecord {
     this.lat = obj.lat;
     this.lon = obj.lon;
     this.userId = obj.userId;
+    this.categoryId = obj.categoryId;
   }
 
   get eventId() {
@@ -186,9 +192,20 @@ export class EventRecord {
     this.userId = userId;
   }
 
+  get eventCategoryId() {
+    return this.categoryId;
+  }
+
+  set eventCategoryId(categoryId: string) {
+    if (!validate(categoryId)) {
+      throw new AppError('Invalid categoryId', 400);
+    }
+    this.categoryId = categoryId;
+  }
+
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id);',
+      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id, :category_id);',
       {
         id: this.id,
         name: this.name,
@@ -199,6 +216,7 @@ export class EventRecord {
         lat: this.lat,
         lon: this.lon,
         user_id: this.userId,
+        category_id: this.categoryId,
       },
     );
 
@@ -230,7 +248,7 @@ export class EventRecord {
 
   public static async getAll(): Promise<MainEventData[]> {
     const [results] = (await pool.execute(
-      'SELECT `id`, `name`, `description`, `lat`, `lon` FROM `events`;',
+      'SELECT e.id AS id, e.name AS name, e.description AS description, e.lat AS lat, e.lon AS lon, c.name AS category FROM `events` AS e INNER JOIN `categories` AS c ON e.category_id=c.id;',
     )) as MainEventRecordResults;
 
     return results;
@@ -244,16 +262,7 @@ export class EventRecord {
       },
     )) as SimpleEventRecordResults;
 
-    return results.map(result => {
-      const { id, name, lat, lon } = result;
-
-      return {
-        id,
-        name,
-        lat,
-        lon,
-      };
-    });
+    return results;
   }
 
   public async delete(): Promise<boolean> {

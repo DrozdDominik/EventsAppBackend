@@ -11,6 +11,7 @@ export interface EventEntity extends SimpleEventEntity {
   estimatedTime: number;
   link: string | null;
   userId: string;
+  categoryId: string;
 }
 
 export interface NewEventEntity
@@ -28,6 +29,7 @@ export interface MainEventData {
   description: string;
   lat: number;
   lon: number;
+  category: string;
 }
 
 export type NewEventData = Omit<EventEntity, 'id' | 'isChosen' | 'userId'>;

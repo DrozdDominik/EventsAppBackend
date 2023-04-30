@@ -10,6 +10,7 @@ import { handleError, handleNotFound } from './utils/error';
 import { eventRouter } from './routers/event.router';
 import { userRouter } from './routers/user.router';
 import { apiLimiter, userLimiter } from './utils/limiter';
+import { categoryRouter } from './routers/category.router';
 
 const app = express();
 
@@ -20,9 +21,9 @@ app.use('/user', userLimiter);
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use('/api/event', eventRouter);
 app.use('/user', userRouter);
+app.use('api/category', categoryRouter);
 
 app.use(handleNotFound);
 
