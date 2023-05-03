@@ -68,3 +68,9 @@ export const isDateValid = (date: string) => {
 
   return month >= 1 && month < 13 && day > 0 && day <= daysInMonth(month, year);
 };
+
+export const isTimeValid = (time: string) => {
+  const regex = new RegExp(/^([01]\d|2[0-3]):?([0-5]\d)$/);
+
+  return regex.test(time);
+};
