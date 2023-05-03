@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import { EventRecord } from '../records/event.record';
-import { NewEventData, NewEventEntity } from '../types';
+import {
+  EventResponse,
+  NewEventData,
+  NewEventEntity,
+  EventUpdate,
+} from '../types';
 import { AppError } from '../utils/error';
-import { EventUpdate } from '../types/event/event-update';
 import { validate } from 'uuid';
 import { UserRecord } from '../records/user.record';
+import { CategoryRecord } from '../records/category.record';
 
 export const getAllEvents = async (req: Request, res: Response) => {
   const events = await EventRecord.getAll();
@@ -40,9 +45,23 @@ export const getEvent = async (req: Request, res: Response) => {
     throw new AppError('There is no event with the given id', 404);
   }
 
-  delete event.validationErrors;
+  const category = await CategoryRecord.getOne(event.eventCategoryId);
 
-  res.json({ event });
+  if (!category) {
+    throw new AppError('There is no category with the given id', 500);
+  }
+
+  const response: EventResponse = {
+    name: event.eventName,
+    description: event.eventDescription,
+    category: category.categoryName,
+    estimatedTime: event.eventEstimatedTime,
+    link: event.eventLink,
+    lat: event.eventLat,
+    lon: event.eventLon,
+  };
+
+  res.json({ event: response });
 };
 
 export const deleteEvent = async (req: Request, res: Response) => {
