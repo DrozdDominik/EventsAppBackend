@@ -7,6 +7,7 @@ const defaultObj: NewEventEntity = {
   name: 'Test event',
   description: 'Test event description',
   estimatedTime: 180,
+  date: '2023-05-28',
   lat: 20,
   lon: 50,
   userId: faker.datatype.uuid(),
@@ -21,6 +22,7 @@ it('should build EventRecord', () => {
   expect(event.eventLink).toBeNull();
   expect(event.eventName).toBe(defaultObj.name);
   expect(event.eventDescription).toBe(defaultObj.description);
+  expect(event.eventDate).toBe(defaultObj.date);
   expect(event.eventEstimatedTime).toBe(defaultObj.estimatedTime);
   expect(event.eventLat).toBe(defaultObj.lat);
   expect(event.eventLon).toBe(defaultObj.lon);

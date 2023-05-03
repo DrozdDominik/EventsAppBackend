@@ -45,3 +45,26 @@ export const isLinkValid = (link: string): boolean => {
   }
   return url.protocol === 'http:' || url.protocol === 'https:';
 };
+
+const daysInMonth = (month: number, year: number) => {
+  switch (month) {
+    case 2:
+      return (year % 4 === 0 && year % 100) || year % 400 === 0 ? 29 : 28;
+    case 9:
+    case 4:
+    case 6:
+    case 11:
+      return 30;
+    default:
+      return 31;
+  }
+};
+
+export const isDateValid = (date: string) => {
+  const data = date.split('-');
+  const year = Number(data[0]);
+  const month = Number(data[1]);
+  const day = Number(data[2]);
+
+  return month >= 1 && month < 13 && day > 0 && day <= daysInMonth(month, year);
+};

@@ -8,10 +8,11 @@ import {
 } from '../types';
 import { pool } from '../utils/db';
 import { AppError } from '../utils/error';
-import { UpdateProperty } from '../types/event/event-update';
+import { UpdateProperty } from '../types';
 import {
   convertCamelCaseToSnakeCase,
   convertSnakeCaseToCamelCase,
+  isDateValid,
   isLinkValid,
 } from '../utils/auxiliaryMethods';
 
@@ -25,6 +26,7 @@ export class EventRecord {
   private description: string;
   private isChosen: boolean;
   private estimatedTime: number;
+  private date: string;
   private link: string | null;
   private lat: number;
   private lon: number;
@@ -58,6 +60,10 @@ export class EventRecord {
       );
     }
 
+    if (!obj.date || !isDateValid(obj.date)) {
+      this.validationErrors.push('Invalid date.');
+    }
+
     if (typeof obj.lat !== 'number' || typeof obj.lon !== 'number') {
       this.validationErrors.push('Coordinates must be numbers.');
     }
@@ -85,6 +91,7 @@ export class EventRecord {
     this.name = obj.name;
     this.description = obj.description;
     this.estimatedTime = obj.estimatedTime;
+    this.date = obj.date;
     this.lat = obj.lat;
     this.lon = obj.lon;
     this.userId = obj.userId;
@@ -142,6 +149,18 @@ export class EventRecord {
       );
     } else {
       this.estimatedTime = estimatedTime;
+    }
+  }
+
+  get eventDate() {
+    return this.date;
+  }
+
+  set eventDate(date: string) {
+    if (!date || !isDateValid(date)) {
+      this.validationErrors.push('Invalid date.');
+    } else {
+      this.date = date;
     }
   }
 
@@ -205,13 +224,14 @@ export class EventRecord {
 
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :link, :lat, :lon, :user_id, :category_id);',
+      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :date, :link, :lat, :lon, :user_id, :category_id);',
       {
         id: this.id,
         name: this.name,
         description: this.description,
         is_chosen: this.isChosen,
         estimated_time: this.estimatedTime,
+        date: this.date,
         link: this.link,
         lat: this.lat,
         lon: this.lon,
@@ -248,7 +268,7 @@ export class EventRecord {
 
   public static async getAll(): Promise<MainEventData[]> {
     const [results] = (await pool.execute(
-      'SELECT e.id AS id, e.name AS name, e.description AS description, e.lat AS lat, e.lon AS lon, c.name AS category FROM `events` AS e INNER JOIN `categories` AS c ON e.category_id=c.id;',
+      'SELECT e.id AS id, e.name AS name, e.description AS description, e.date AS date, e.lat AS lat, e.lon AS lon, c.name AS category FROM `events` AS e INNER JOIN `categories` AS c ON e.category_id=c.id;',
     )) as MainEventRecordResults;
 
     return results;

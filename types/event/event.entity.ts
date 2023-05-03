@@ -9,6 +9,7 @@ export interface EventEntity extends SimpleEventEntity {
   description: string;
   isChosen: boolean;
   estimatedTime: number;
+  date: string;
   link: string | null;
   userId: string;
   categoryId: string;
@@ -27,6 +28,7 @@ export interface MainEventData {
   id: string;
   name: string;
   description: string;
+  date: string;
   lat: number;
   lon: number;
   category: string;
