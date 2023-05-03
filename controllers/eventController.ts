@@ -56,6 +56,7 @@ export const getEvent = async (req: Request, res: Response) => {
     description: event.eventDescription,
     category: category.categoryName,
     estimatedTime: event.eventEstimatedTime,
+    date: event.eventDate,
     link: event.eventLink,
     lat: event.eventLat,
     lon: event.eventLon,
