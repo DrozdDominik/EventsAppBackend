@@ -2,6 +2,7 @@ import { it, expect, describe } from 'vitest';
 import {
   convertCamelCaseToSnakeCase,
   convertSnakeCaseToCamelCase,
+  isDateValid,
   isEmailValid,
   isLinkValid,
   isPasswordValid,
@@ -108,6 +109,40 @@ describe('isLinkValid()', () => {
     const validLink = 'https://example.com';
 
     const result = isLinkValid(validLink);
+
+    expect(result).toBe(true);
+  });
+});
+
+describe('isDateValid()', () => {
+  it('should returns false if provided not valid date', () => {
+    const notValidDate = '2023-02-30';
+
+    const result = isDateValid(notValidDate);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns false if provided not valid month', () => {
+    const notValidDate = '2023-14-29';
+
+    const result = isDateValid(notValidDate);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns false if provided not valid day', () => {
+    const notValidDate = '2023-05-32';
+
+    const result = isDateValid(notValidDate);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns true if provided valid date', () => {
+    const validDate = '2023-05-31';
+
+    const result = isDateValid(validDate);
 
     expect(result).toBe(true);
   });
