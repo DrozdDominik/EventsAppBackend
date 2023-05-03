@@ -3,6 +3,7 @@ export interface EventUpdate {
   description?: string;
   isChosen?: boolean;
   estimatedTime?: number;
+  date?: string;
   link?: string;
   lat?: number;
   lon?: number;
