@@ -8,9 +8,10 @@ import { CategoryRecord } from '../records/category.record';
 
 let defaultObj: NewEventEntity;
 let objToTests: NewEventEntity;
+let categoriesIds: CategoryRecord[];
 
 beforeAll(async () => {
-  const categoriesIds = await CategoryRecord.getAll();
+  categoriesIds = await CategoryRecord.getAll();
 
   defaultObj = {
     name: 'Test event name',
@@ -133,7 +134,7 @@ describe('EventRecord.update()', () => {
     event.isEventChosen = true;
     event.eventEstimatedTime = 88;
     event.eventLink = 'https://example.link';
-    event.eventCategoryId = faker.datatype.uuid();
+    event.eventCategoryId = categoriesIds[1].categoryId;
 
     const updatedColumns = [
       'name',
