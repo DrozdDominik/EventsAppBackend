@@ -55,6 +55,7 @@ export const getEvent = async (req: Request, res: Response) => {
     name: event.eventName,
     description: event.eventDescription,
     category: category.categoryName,
+    time: event.eventTime,
     duration: event.eventDuration,
     date: event.eventDate,
     link: event.eventLink,
@@ -111,6 +112,10 @@ export const updateEvent = async (req: Request, res: Response) => {
 
   if (obj.isChosen) {
     event.isEventChosen = obj.isChosen;
+  }
+
+  if (obj.time) {
+    event.eventTime = obj.time;
   }
 
   if (obj.duration) {
