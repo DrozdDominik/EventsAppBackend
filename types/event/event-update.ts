@@ -2,7 +2,7 @@ export interface EventUpdate {
   name?: string;
   description?: string;
   isChosen?: boolean;
-  estimatedTime?: number;
+  duration?: number;
   date?: string;
   link?: string;
   lat?: number;

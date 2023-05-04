@@ -14,6 +14,7 @@ import {
   convertSnakeCaseToCamelCase,
   isDateValid,
   isLinkValid,
+  isTimeValid,
 } from '../utils/auxiliaryMethods';
 
 type EventRecordResults = [NewEventEntity[], FieldPacket[]];
@@ -25,7 +26,8 @@ export class EventRecord {
   private name: string;
   private description: string;
   private isChosen: boolean;
-  private estimatedTime: number;
+  private time: string;
+  private duration: number;
   private date: string;
   private link: string | null;
   private lat: number;
@@ -54,7 +56,11 @@ export class EventRecord {
       );
     }
 
-    if (obj.estimatedTime <= 0) {
+    if (!obj.time || !isTimeValid(obj.time)) {
+      this.validationErrors.push('Invalid time.');
+    }
+
+    if (!obj.duration || obj.duration <= 0) {
       this.validationErrors.push(
         'Event estimated time must be greater then zero.',
       );
@@ -90,7 +96,8 @@ export class EventRecord {
 
     this.name = obj.name;
     this.description = obj.description;
-    this.estimatedTime = obj.estimatedTime;
+    this.time = obj.time;
+    this.duration = obj.duration;
     this.date = obj.date;
     this.lat = obj.lat;
     this.lon = obj.lon;
@@ -138,17 +145,29 @@ export class EventRecord {
     this.isChosen = isChosen;
   }
 
-  get eventEstimatedTime() {
-    return this.estimatedTime;
+  get eventTime() {
+    return this.time;
   }
 
-  set eventEstimatedTime(estimatedTime: number) {
-    if (estimatedTime <= 0) {
+  set eventTime(time: string) {
+    if (!isTimeValid(time)) {
+      this.validationErrors.push('Invalid time.');
+    } else {
+      this.time = time;
+    }
+  }
+
+  get eventDuration() {
+    return this.duration;
+  }
+
+  set eventDuration(duration: number) {
+    if (duration <= 0) {
       this.validationErrors.push(
         'Event estimated time must be greater then zero.',
       );
     } else {
-      this.estimatedTime = estimatedTime;
+      this.duration = duration;
     }
   }
 
@@ -224,13 +243,14 @@ export class EventRecord {
 
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :estimated_time, :date, :link, :lat, :lon, :user_id, :category_id);',
+      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :time, :duration, :date, :link, :lat, :lon, :user_id, :category_id);',
       {
         id: this.id,
         name: this.name,
         description: this.description,
         is_chosen: this.isChosen,
-        estimated_time: this.estimatedTime,
+        time: this.time,
+        duration: this.duration,
         date: this.date,
         link: this.link,
         lat: this.lat,

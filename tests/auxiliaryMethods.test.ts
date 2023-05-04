@@ -6,6 +6,7 @@ import {
   isEmailValid,
   isLinkValid,
   isPasswordValid,
+  isTimeValid,
 } from '../utils/auxiliaryMethods';
 
 describe('convertCamelCaseToSnakeCase()', () => {
@@ -143,6 +144,40 @@ describe('isDateValid()', () => {
     const validDate = '2023-05-31';
 
     const result = isDateValid(validDate);
+
+    expect(result).toBe(true);
+  });
+});
+
+describe('isTimeValid()', () => {
+  it('should returns false if provided not valid time', () => {
+    const notValidTime = '21.11';
+
+    const result = isTimeValid(notValidTime);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns false if provided not valid hour', () => {
+    const notValidTime = '25:11';
+
+    const result = isTimeValid(notValidTime);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns false if provided not valid minutes', () => {
+    const notValidTime = '11:61';
+
+    const result = isTimeValid(notValidTime);
+
+    expect(result).toBe(false);
+  });
+
+  it('should returns true if provided valid time', () => {
+    const validTime = '22:11';
+
+    const result = isTimeValid(validTime);
 
     expect(result).toBe(true);
   });

@@ -17,8 +17,9 @@ beforeAll(async () => {
     name: 'Test event name',
     description: 'Dummy description',
     isChosen: true,
-    estimatedTime: 150,
     date: '2023-05-28',
+    time: '12:00',
+    duration: 150,
     lat: 21.23,
     lon: 50.03,
     userId: faker.datatype.uuid(),
@@ -28,8 +29,9 @@ beforeAll(async () => {
   objToTests = {
     name: 'Delete me',
     description: 'Testing delete functionality.',
-    estimatedTime: 45,
     date: '2023-06-02',
+    time: '15:00',
+    duration: 45,
     lat: 20.44,
     lon: 34.87,
     userId: faker.datatype.uuid(),
@@ -105,7 +107,7 @@ describe('EventRecord.findAll()', () => {
     expect(events).toEqual([]);
   });
 
-  it('should returns data without "description", "isChosen", "estimatedTime" and "link".', async () => {
+  it('should returns data without "description", "isChosen", "duration" and "link".', async () => {
     const events = await EventRecord.findAll('');
 
     expect(events[0]).not.property('description');
@@ -134,7 +136,9 @@ describe('EventRecord.update()', () => {
     event.eventName = 'Updated event';
     event.eventDescription = 'New content.';
     event.isEventChosen = true;
-    event.eventEstimatedTime = 88;
+    event.eventDate = '2023-06-02';
+    event.eventTime = '16:16';
+    event.eventDuration = 88;
     event.eventLink = 'https://example.link';
     event.eventCategoryId = categoriesIds[1].categoryId;
 
@@ -142,7 +146,9 @@ describe('EventRecord.update()', () => {
       'name',
       'description',
       'isChosen',
-      'estimatedTime',
+      'date',
+      'time',
+      'duration',
       'link',
       'categoryId',
     ];

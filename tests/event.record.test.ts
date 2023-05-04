@@ -6,8 +6,9 @@ import { faker } from '@faker-js/faker';
 const defaultObj: NewEventEntity = {
   name: 'Test event',
   description: 'Test event description',
-  estimatedTime: 180,
   date: '2023-05-28',
+  time: '12:12',
+  duration: 180,
   lat: 20,
   lon: 50,
   userId: faker.datatype.uuid(),
@@ -23,7 +24,8 @@ it('should build EventRecord', () => {
   expect(event.eventName).toBe(defaultObj.name);
   expect(event.eventDescription).toBe(defaultObj.description);
   expect(event.eventDate).toBe(defaultObj.date);
-  expect(event.eventEstimatedTime).toBe(defaultObj.estimatedTime);
+  expect(event.eventTime).toBe(defaultObj.time);
+  expect(event.eventDuration).toBe(defaultObj.duration);
   expect(event.eventLat).toBe(defaultObj.lat);
   expect(event.eventLon).toBe(defaultObj.lon);
   expect(event.eventUserId).toBe(defaultObj.userId);

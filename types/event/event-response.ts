@@ -2,7 +2,7 @@ export interface EventResponse {
   name: string;
   description: string;
   category: string;
-  estimatedTime: number;
+  duration: number;
   date: string;
   link: string | null;
   lat: number;
