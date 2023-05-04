@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use('/api/event', eventRouter);
 app.use('/user', userRouter);
-app.use('api/category', categoryRouter);
+app.use('/api/category', categoryRouter);
 
 app.use(handleNotFound);
 
