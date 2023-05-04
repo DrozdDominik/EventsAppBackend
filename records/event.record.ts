@@ -26,6 +26,7 @@ export class EventRecord {
   private name: string;
   private description: string;
   private isChosen: boolean;
+  private time: string;
   private duration: number;
   private date: string;
   private link: string | null;
@@ -53,6 +54,10 @@ export class EventRecord {
       this.validationErrors.push(
         `Event description length must be between 10 and 500 characters - now is ${obj.description.length}.`,
       );
+    }
+
+    if (!obj.time || !isTimeValid(obj.time)) {
+      this.validationErrors.push('Invalid time.');
     }
 
     if (!obj.duration || obj.duration <= 0) {
@@ -91,6 +96,7 @@ export class EventRecord {
 
     this.name = obj.name;
     this.description = obj.description;
+    this.time = obj.time;
     this.duration = obj.duration;
     this.date = obj.date;
     this.lat = obj.lat;
@@ -137,6 +143,18 @@ export class EventRecord {
 
   set isEventChosen(isChosen: boolean) {
     this.isChosen = isChosen;
+  }
+
+  get eventTime() {
+    return this.time;
+  }
+
+  set eventTime(time: string) {
+    if (!isTimeValid(time)) {
+      this.validationErrors.push('Invalid time.');
+    } else {
+      this.time = time;
+    }
   }
 
   get eventDuration() {
@@ -225,12 +243,13 @@ export class EventRecord {
 
   public async insert(): Promise<string> {
     await pool.execute(
-      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :duration, :date, :link, :lat, :lon, :user_id, :category_id);',
+      'INSERT INTO `events` VALUES (:id, :name, :description, :is_chosen, :time, :duration, :date, :link, :lat, :lon, :user_id, :category_id);',
       {
         id: this.id,
         name: this.name,
         description: this.description,
         is_chosen: this.isChosen,
+        time: this.time,
         duration: this.duration,
         date: this.date,
         link: this.link,

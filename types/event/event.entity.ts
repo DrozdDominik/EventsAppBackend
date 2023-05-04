@@ -8,6 +8,7 @@ export interface SimpleEventEntity {
 export interface EventEntity extends SimpleEventEntity {
   description: string;
   isChosen: boolean;
+  time: string;
   duration: number;
   date: string;
   link: string | null;
