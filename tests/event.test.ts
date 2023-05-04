@@ -17,8 +17,9 @@ beforeAll(async () => {
     name: 'Test event name',
     description: 'Dummy description',
     isChosen: true,
-    duration: 150,
     date: '2023-05-28',
+    time: '12:00',
+    duration: 150,
     lat: 21.23,
     lon: 50.03,
     userId: faker.datatype.uuid(),
@@ -28,8 +29,9 @@ beforeAll(async () => {
   objToTests = {
     name: 'Delete me',
     description: 'Testing delete functionality.',
-    duration: 45,
     date: '2023-06-02',
+    time: '15:00',
+    duration: 45,
     lat: 20.44,
     lon: 34.87,
     userId: faker.datatype.uuid(),
@@ -134,6 +136,8 @@ describe('EventRecord.update()', () => {
     event.eventName = 'Updated event';
     event.eventDescription = 'New content.';
     event.isEventChosen = true;
+    event.eventDate = '2023-06-02';
+    event.eventTime = '16:16';
     event.eventDuration = 88;
     event.eventLink = 'https://example.link';
     event.eventCategoryId = categoriesIds[1].categoryId;
@@ -142,6 +146,8 @@ describe('EventRecord.update()', () => {
       'name',
       'description',
       'isChosen',
+      'date',
+      'time',
       'duration',
       'link',
       'categoryId',
