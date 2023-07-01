@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { CategoryRecord } from '../records/category.record';
-import { CategoryEntity } from '../types/category/category.entity';
+import { CategoryEntity } from '../types';
 import { AppError } from '../utils/error';
 import { validate } from 'uuid';
 
